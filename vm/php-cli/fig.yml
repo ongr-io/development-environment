@@ -1,0 +1,7 @@
+php:
+     image: tutum/apache-php
+     expose:
+     - 9000
+     volumes:
+     - ./www:var/www
+

@@ -1,0 +1,28 @@
+data:
+     image: maxexcloo/data
+     volumes:
+     - ./:/data
+composer:
+     image: azukiapp/php-apache:composer
+     volumes_from:
+     - data
+web:
+     image: azukiapp/php-apache:5.5
+     ports:
+     - "80:80"
+     volumes_from:
+     - data
+phpfpm:
+     image: php:fpm
+     expose:
+     - 9000
+     volumes:
+     - data
+nginx:
+       image: nginx:latest
+       ports:
+       - 80:80
+       expose:
+       - 9000
+       volumes_from:
+       - data
