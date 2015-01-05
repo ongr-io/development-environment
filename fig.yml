@@ -1,28 +1,59 @@
 data:
-     image: maxexcloo/data
+     image: obi12341/data
+     environment:
+        ROOT_PASS: root
      volumes:
-     - ./:/data
+      - ./:/var/www
+
 composer:
      image: azukiapp/php-apache:composer
-     volumes_from:
-     - data
-web:
-     image: azukiapp/php-apache:5.5
+
+elasticsearch:
+     image: barnybug/elasticsearch:1.4.1
      ports:
-     - "80:80"
-     volumes_from:
-     - data
-phpfpm:
-     image: php:fpm
-     expose:
-     - 9000
-     volumes:
-     - data
+        - "9200:9200"
+
 nginx:
-       image: nginx:latest
-       ports:
-       - 80:80
-       expose:
-       - 9000
-       volumes_from:
-       - data
+     build: ./vm/nginx
+     ports:
+        - 80:80
+     expose:
+        - 9000
+     volumes_from:
+        - phpfpm
+     volumes:
+     - /var/log/nginx/
+
+apache:
+     image: eboraas/apache
+     ports:
+        - "8080:80"
+     volumes_from:
+        - data
+
+mysql:
+     build: ./vm/mysql
+     environment:
+        MYSQL_ROOT_PASSWORD: root
+     ports:
+        - "3306:3006"
+     volumes:
+        - /mysql:/var/lib/mysql
+        - /mysqld:/var/lib/mysqld
+
+lamp:
+     build: ./vm/lamp
+     volumes_from:
+        - data
+        - mysql
+     ports:
+        - "80:80"
+     links:
+        - mysql
+
+phpfpm:
+     build: ./vm/php-fpm
+     expose:
+        - 9000
+     volumes_from:
+        - data
