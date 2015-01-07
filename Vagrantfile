@@ -12,9 +12,9 @@ Vagrant.configure( "2" ) do |config|
   config.vm.provision :docker
   config.vm.provision :shell, path: ".provision/provision"
 
-  config.vm.provision :puppet do |puppet|
-    puppet.manifests_path = ".provision/puppet/manifests"
-    puppet.options        = ["--verbose"]
+  config.vm.provision :puppet do |p|
+    p.manifests_path = ".provision/puppet/manifests"
+    p.options        = ["--verbose"]
   end
 
 end
