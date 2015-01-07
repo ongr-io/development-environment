@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+
+sudo apt-get update
+sudo apt-get upgrade -y
+sudo apt-get install librarian-puppet -y
+
+if [ -x /usr/bin/librarian-puppet ]; then
+  cd /vagrant/.provision/puppet && sudo librarian-puppet install --path=/etc/puppet/modules --verbose
+fi
