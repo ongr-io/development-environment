@@ -1,8 +1,0 @@
-ResourceLimit {
-    SocketDefaultTimeout = 60  # in seconds
-}
-
-Http {
-    DefaultTimeout = 60           # in seconds
-    SlowQueryThreshold = 600000   # in ms, log slow HTTP requests as errors
-}

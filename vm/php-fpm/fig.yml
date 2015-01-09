@@ -1,9 +1,0 @@
-php:
-     image: jprjr/ubuntu-php-fpm:latest
-     expose:
-     - 9000
-     ports:
-     - "9000:9000"
-     volumes:
-     - ./www:/var/www
-
