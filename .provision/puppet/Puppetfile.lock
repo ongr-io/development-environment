@@ -1,10 +1,16 @@
 FORGE
   remote: http://forge.puppetlabs.com
   specs:
-    puppetlabs/nginx (99.99.99)
-      puppetlabs/stdlib (>= 0.1.6)
+    jfryman/nginx (0.2.1)
+      puppetlabs/apt (>= 1.0.0)
+      puppetlabs/concat (>= 1.1.0)
+      puppetlabs/stdlib (>= 3.0.0)
+    puppetlabs/apt (1.7.0)
+      puppetlabs/stdlib (>= 2.2.1)
+    puppetlabs/concat (1.1.2)
+      puppetlabs/stdlib (< 5.0.0, >= 3.2.0)
     puppetlabs/stdlib (4.5.0)
 
 DEPENDENCIES
-  puppetlabs/nginx (>= 0)
+  jfryman/nginx (>= 0)
 
