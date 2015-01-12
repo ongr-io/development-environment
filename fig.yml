@@ -1,59 +1,22 @@
-data:
-     image: obi12341/data
-     environment:
-        ROOT_PASS: root
-     volumes:
-      - ./:/var/www
-
-composer:
-     image: azukiapp/php-apache:composer
+nginx:
+  build: .provision/docker/nginx
+  ports:
+    - 80
+  volumes:
+    - /vagrant
+    - /srv
+  links:
+    - php
+    - elasticsearch
 
 elasticsearch:
-     image: barnybug/elasticsearch:1.4.1
-     ports:
-        - "9200:9200"
+  build: .provision/docker/elasticsearch13
+  ports:
+    - 9200
 
-nginx:
-     build: ./vm/nginx
-     ports:
-        - 80:80
-     expose:
-        - 9000
-     volumes_from:
-        - phpfpm
-     volumes:
-     - /var/log/nginx/
-
-apache:
-     image: eboraas/apache
-     ports:
-        - "8080:80"
-     volumes_from:
-        - data
-
-mysql:
-     build: ./vm/mysql
-     environment:
-        MYSQL_ROOT_PASSWORD: root
-     ports:
-        - "3306:3006"
-     volumes:
-        - /mysql:/var/lib/mysql
-        - /mysqld:/var/lib/mysqld
-
-lamp:
-     build: ./vm/lamp
-     volumes_from:
-        - data
-        - mysql
-     ports:
-        - "80:80"
-     links:
-        - mysql
-
-phpfpm:
-     build: ./vm/php-fpm
-     expose:
-        - 9000
-     volumes_from:
-        - data
+php:
+  build: .provision/docker/php55
+  volumes:
+    - /srv
+  links:
+    - elasticsearch
