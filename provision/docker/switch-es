@@ -1,0 +1,55 @@
+#!/bin/sh
+okay() {
+        echo "Version changed. Wait for about 10sec to launch."
+        c=1
+        while [ $c -le 10 ]
+        do
+           printf "."
+           sleep 1
+           c=$(( $c + 1 ))
+        done
+        echo ""
+        curl localhost:9200
+}
+
+changeversion() {
+        directory='/vagrant/provision/docker/'
+        version=`echo elasticsearch/$1 | tr -d '.'`
+        name=`echo $1 | tr -d '/'`
+        toStop=`docker ps | grep elasticsearch | awk '{print $1}'`
+        docker stop $toStop >/dev/null
+
+        imagescount=`docker images | grep $version | wc | awk '{print $1}'`
+        if [ $imagescount -ne 1 ];
+        then
+            cd "/vagrant/provision/docker/$1" && docker build -t "$version:latest" .
+        fi
+
+        containerAvailable=`docker ps -a |grep $name`
+        if [ -z "$containerAvailable" ];
+        then
+          docker run --name=$name -d -p 9300:9300 -p 9200:9200 $version >/dev/null
+        else
+          docker start $name >/dev/null
+        fi
+        okay
+}
+
+if [ $# -eq 1 ]; then
+        dir='/vagrant/provision/docker'
+        checking=$(curl -s -I -X GET https://download.elasticsearch.org/elasticsearch/elasticsearch/elasticsearch-$1.tar.gz | head -n 1 | grep -o OK)
+        if [ "$checking" = "OK" ]; then
+                if [ ! -d "$dir/$1" ]; then
+                        mkdir $dir/$1;
+                        cat $dir/template/Dockerfile | sed "s|versions|$1|g" > $dir/$1/Dockerfile;
+                        changeversion "$1"
+                else
+                        [ -f $dir/$1/Dockerfile ] && changeversion "$1" || sed "s/versions/$1/g" < $dir/template/Dockerfile > $dir/$1/Dockerfile
+                        changeversion "$1"
+                fi
+        else
+                echo "Wrong version."
+        fi
+else
+        echo "Only one argument is required."
+fi
