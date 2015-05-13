@@ -1,2 +1,4 @@
-.idea
-.vagrant
+/.vagrant/
+/vagrant/.librarian
+/vagrant/.tmp
+/vagrant/modules/*

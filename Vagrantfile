@@ -1,27 +1,33 @@
-Vagrant.configure( "2" ) do |config|
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+Vagrant.require_version ">= 1.6.5"
+# Vagrantfile API/syntax version. Don't touch unless you know what you're doing!
+VAGRANTFILE_API_VERSION = "2"
+Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
+  config.vm.box = "ubuntu/trusty64"
+  config.vm.network :private_network, ip: "192.168.80.10"
+  config.ssh.forward_agent = true
 
-  config.vm.box      = "ubuntu/trusty64"
-  config.vm.hostname = "vm1.ongr.dev"
+  config.vm.hostname = "test.dev"
 
   config.vm.provider :virtualbox do |v|
-    v.name   = "vm1"
-    v.cpus   = 1
-    v.memory = 512
-    v.gui    = true
+    v.customize ["modifyvm", :id, "--natdnshostresolver1", "on"]
+    v.customize ["modifyvm", :id, "--memory", 1024]
+    v.customize ["setextradata", :id, "--VBoxInternal2/SharedFoldersEnableSymlinksCreate/v-root", "1"]
   end
 
-  config.vm.network :private_network, type: :dhcp
-  config.vm.synced_folder "./", "/srv/www", type: :nfs
-
-  config.hostsupdater.aliases = ["www.vm1.dev", "vm1.dev"]
-
-  config.vm.provision :docker
-  config.vm.provision :shell, path: ".provision/bootstrap"
-
-  config.vm.provision :puppet do |p|
-    p.module_path    = ".provision/puppet/modules"
-    p.manifests_path = ".provision/puppet/manifests"
-    p.options        = ["--verbose"]
+  config.vm.synced_folder "./", "/var/www", type: "nfs", :mount_options => ['nolock,vers=3,udp,noatime']
+  config.vm.provision "shell", path: "vagrant/install.sh"
+  config.vm.provision :puppet do |puppet|
+    puppet.manifests_path = "./vagrant/manifests"
+    puppet.module_path    = "./vagrant/modules"
+    puppet.facter = { "ssh_username" => "vagrant", "vhost" => config.vm.hostname }
+    puppet.options = ["--verbose", "--debug", "--parser future"]
   end
 
+  config.ssh.shell = "bash -l"
+  config.ssh.keep_alive = true
+  config.ssh.forward_agent = false
+  config.ssh.forward_x11 = false
+  config.vagrant.host = :detect
 end
