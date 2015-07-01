@@ -8,7 +8,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   config.vm.network :private_network, ip: "192.168.80.10"
   config.ssh.forward_agent = true
 
-  config.vm.hostname = "test.dev"
+  config.vm.hostname = "ongr.dev"
 
   config.vm.provider :virtualbox do |v|
     v.customize ["modifyvm", :id, "--natdnshostresolver1", "on"]

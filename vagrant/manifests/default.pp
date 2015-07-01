@@ -1,5 +1,6 @@
 # # Ensure the time is accurate, reducing the possibilities of apt repositories
 # # failing for invalid certificates
+include git
 include composer
 
 Exec["apt-update"] -> Package <| |>
@@ -142,6 +143,7 @@ php::module {
 augeas { "custom":
   context => "/files/etc/php5/mods-available/custom.ini",
   changes => [
+  "set PHP/opcache.enable 0",
   "set PHP/date.timezone Europe/Vilnius",
   "set XDEBUG/xdebug.default_enable 1",
   "set XDEBUG/xdebug.max_nesting_level 250",
@@ -168,9 +170,73 @@ file { "/etc/php5/fpm/conf.d/custom.ini":
     require => Augeas["custom"]
 }
 
+#Elasticsearch
+class { 'elasticsearch':
+  manage_repo  => true,
+  repo_version => '1.4',
+  java_install => true,
+}
+
+elasticsearch::instance { 'ongr-01': }
+
+elasticsearch::plugin{'mobz/elasticsearch-head':
+    module_dir => 'head',
+    instances  => 'ongr-01'
+}
+
+elasticsearch::plugin{'elasticsearch/marvel/latest':
+    module_dir => 'marvel',
+    instances  => 'ongr-01'
+}
+
+# Install compass as gem
+package { 'compass':
+    provider => 'gem',
+    ensure => 'present'
+}
+
+exec { 'sass-css-importer':
+    command => 'gem install --pre sass-css-importer',
+    unless => 'gem list --local | grep -c sass-css-importer'
+}
+
 file { '/usr/local/bin/debug':
   ensure => present,
   mode => 755,
-  content => "#!/bin/sh\nenv PHP_IDE_CONFIG=\"serverName=php\" XDEBUG_CONFIG=\"idekey=PHPSTORM\" SYMFONY_DEBUG=\"1\" $@"
+  content => "#!/bin/sh\nenv PHP_IDE_CONFIG=\"serverName=ongr\" XDEBUG_CONFIG=\"idekey=PHPSTORM\" SYMFONY_DEBUG=\"1\" $@"
 }
 
+
+exec { "node_sources" :
+  command => "curl -sL https://deb.nodesource.com/setup | bash -",
+  require => Class["apt"]
+}
+
+package { 'nodejs':
+  require => Exec['node_sources'],
+  ensure => installed,
+}
+
+package { 'bower':
+  provider => 'npm',
+  require => Package['nodejs'],
+  ensure => installed,
+}
+
+package { 'gulp':
+  provider => 'npm',
+  require => Package['nodejs'],
+  ensure => installed,
+}
+
+package { 'phantomjs':
+  provider => 'npm',
+  require => Package['nodejs'],
+  ensure   => present,
+}
+
+package { 'casperjs':
+  provider => 'npm',
+  require => Package['phantomjs'],
+  ensure   => present,
+}
