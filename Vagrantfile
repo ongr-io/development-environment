@@ -24,13 +24,13 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
       chef.node_name = 'ongr.dev'
       chef.add_recipe 'nginx'
       chef.add_recipe 'apt'
-      chef.add_recipe 'bluepill'
+      # chef.add_recipe 'bluepill'
       chef.add_recipe 'rsyslog'
       chef.add_recipe 'build-essential'
       chef.add_recipe 'ohai'
       chef.add_recipe 'runit'
     #  chef.add_recipe 'packagecloud'
-      chef.add_recipe 'yum-epel'
+     # chef.add_recipe 'yum-epel'
       chef.add_recipe 'yum'
   end
 end
