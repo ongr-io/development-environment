@@ -1,0 +1,18 @@
+name "testing-vm"
+description "A testing vm with LEMP"
+run_list(
+    "recipe[build-essential]",
+    "recipe[apt]",
+    "recipe[nginx]",
+    "recipe[nodejs]",
+    "recipe[mysql::server]",
+    "recipe[php5-fpm::install]",
+    "recipe[php::module_mysql]",
+    "recipe[php::module_curl]",
+    "recipe[php::module_gd]",
+  )
+default_attributes(
+  "nginx" => {
+    "port" => ["8001"]
+  }
+)
