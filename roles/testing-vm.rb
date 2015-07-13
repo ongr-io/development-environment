@@ -12,5 +12,7 @@ run_list(
     "recipe[php::module_gd]",
     "recipe[composer]",
     "recipe[git]",
+    "recipe[java]",
+    "recipe[elasticsearch]",
     "recipe[base]",
   )

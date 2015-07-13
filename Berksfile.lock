@@ -6,6 +6,7 @@ DEPENDENCIES
   composer (~> 2.1.0)
   elasticsearch (~> 0.3.13)
   git (~> 4.2.2)
+  java (~> 1.31.0)
   mysql (~> 5.0)
   nginx (~> 2.7.6)
   nodejs (~> 2.4)
