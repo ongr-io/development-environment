@@ -5,7 +5,6 @@ run_list(
     "recipe[apt]",
     "recipe[nginx]",
     "recipe[nodejs]",
-    "recipe[mysql::server]",
     "recipe[php5-fpm::install]",
     "recipe[php::module_mysql]",
     "recipe[php::module_curl]",
