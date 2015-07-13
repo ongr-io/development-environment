@@ -12,21 +12,29 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   
   # Box
   config.vm.box = 'ubuntu/trusty64'
+  if Vagrant.has_plugin?("vagrant-cachier")
+    config.cache.scope = :box
+    config.cache.synced_folder_opts = {
+      type: :nfs,
+      mount_options: ['rw', 'vers=3', 'tcp', 'nolock']
+    }
+  end
   config.vm.network :private_network, ip: '192.168.80.10'
   config.ssh.forward_agent = true
   config.vm.provider :virtualbox do |v|
     v.memory = 1024
     v.cpus = 1
     v.customize ['modifyvm', :id, '--memory', 1024]
+    v.customize ["setextradata", :id, "--VBoxInternal2/SharedFoldersEnableSymlinksCreate/v-root", "1"]
   end
 
   # Install the latest version of chef
   config.omnibus.chef_version = :latest
   config.vm.hostname = 'ongr.dev'
   
-  #sync folder
+  #files
   config.vm.synced_folder './www', '/var/www', type: 'nfs', :mount_options => ['nolock,vers=3,udp,noatime']
-  
+
   #provision via chef solo
   config.vm.provision 'chef_solo' do |chef|
       chef.node_name = 'ongr.dev'
