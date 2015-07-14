@@ -4,6 +4,7 @@ run_list(
     "recipe[build-essential]",
     "recipe[apt]",
     "recipe[nginx]",
+    "recipe[mysql]"
     "recipe[nodejs]",
     "recipe[php5-fpm::install]",
     "recipe[php::module_mysql]",
