@@ -1,8 +1,3 @@
-require_recipe "build-essential"
-require_recipe "nginx"
-require_recipe "mysql::server"
-
-
 include_recipe 'git'
 
 cookbook_file '/etc/nginx/sites-available/ongr.dev' do
