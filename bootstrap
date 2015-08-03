@@ -1,0 +1,37 @@
+#/bin/bash
+
+#Provisioning script for the docker VM. Adds bash aliases for container access and populates ONGR demo data.
+
+#aliases
+if grep -q "alias" /home/vagrant/.profile;then
+	echo "Bash aliases already exist. Skipping..."
+else
+    echo 'alias ongr_web="docker exec -it ongr_web_1 bash"' >> /home/vagrant/.profile
+	echo 'alias ongr_php="docker exec -it ongr_php_1 bash"' >> /home/vagrant/.profile
+	echo 'alias ongr_es="docker exec -it ongr_elasticsearch_1 bash"' >> /home/vagrant/.profile
+	echo 'alias ongr_db="docker exec -it ongr_db_1 bash"' >> /home/vagrant/.profile
+fi
+
+
+#compass
+docker exec ongr_php_1 ls /usr/local/bin/compass &>/dev/null
+if [ $? -ne 0 ];then
+	docker exec ongr_php_1 sh -c 'cd /var/www/public && bundle install'
+fi
+
+#composer
+docker exec ongr_php_1 sh -c 'cd /var/www/public && composer install --no-interaction && app/console assetic:dump'
+
+#demo data
+index=`docker exec ongr_elasticsearch_1 curl -XHEAD -i localhost:9200/ongr 2>/dev/null | head -n 1 | cut -d$' ' -f2`
+
+console="docker exec ongr_php_1 /var/www/public/app/console"
+if [[ $index = "200" ]]; then
+	echo "Index already exists. Skippping..."
+else
+    $console ongr:es:index:create 
+	$console ongr:es:type:update --force 
+	$console ongr:es:index:import --raw /var/www/public/src/ONGR/DemoBundle/Resources/data/categories.json 
+	$console ongr:es:index:import --raw /var/www/public/src/ONGR/DemoBundle/Resources/data/products.json 
+	$console ongr:es:index:import --raw /var/www/public/src/ONGR/DemoBundle/Resources/data/contents.json 
+fi

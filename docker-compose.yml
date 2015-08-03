@@ -1,0 +1,31 @@
+web:
+  build: ./images/nginx
+  ports:
+    - "8080:80"
+  volumes:
+    - ./src:/var/www
+    - ./conf/vhost.conf:/etc/nginx/sites-enabled/vhost.conf
+  links:
+    - php
+php:
+  build: ./images/php
+  volumes:
+    - ./conf/php-fpm.conf:/etc/php5/fpm/php-fpm.conf
+    - ./src:/var/www
+  links:
+    - db
+    - elasticsearch
+db:
+  image: sameersbn/mysql
+  volumes:
+    - /var/lib/mysql/ongr:/var/lib/mysql/ongr
+  environment:
+    - DB_NAME=ongr
+    - DB_USER=ongruser
+    - DB_PASS=ongrpass
+elasticsearch:
+ build: ./images/elasticsearch
+ ports:
+    - "9222:9200"
+ volumes:
+    - /usr/share/elasticsearch/data:/usr/share/elasticsearch/data
