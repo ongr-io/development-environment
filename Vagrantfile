@@ -33,12 +33,12 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   config.vm.hostname = 'ongr.dev'
   
   #files
-  config.vm.synced_folder './www', '/var/www', type: 'nfs', :mount_options => ['nolock,vers=3,udp,noatime']
+  config.vm.synced_folder './www', '/srv/www/current/', type: 'nfs', :mount_options => ['nolock,vers=3,udp,noatime']
 
   #provision via chef solo
   config.vm.provision 'chef_solo' do |chef|
       chef.node_name = 'ongr.dev'
       chef.roles_path = 'roles'
-      chef.add_role('testing-vm')
+      chef.add_role('dev')
   end
 end

@@ -1,5 +1,8 @@
 name "base"
-version "1.1"
+version "0.1.0"
 
 depends "nginx"
-depends 'mysql', '~> 6.0'
+depends "php5-fpm"
+depends "mysql"
+depends "jenkins"
+depends "ssh_authorized_keys"
