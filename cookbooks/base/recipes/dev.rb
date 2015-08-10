@@ -1,9 +1,28 @@
 #configure nginx vhost
 
-file '/etc/nginx/sites-available/default' do
-  action :delete
-  notifies :restart, "service[nginx]", :delayed
+template "/etc/nginx/sites-available/ongr.dev" do
+  source "dev.erb"
+  owner 'root'
+  group 'root'
+  mode '0644'
+  variables ({
+    :server_name => node['base']['server_name'],
+    :docroot => node['base']['docroot']
+    })
 end
+
+nginx_site 'ongr.dev'
+
+file '/etc/nginx/sites-available/default' do
+  source "default"
+  owner 'root'
+  group 'root'
+  mode '0644'
+  action :create
+end
+
+nginx_site 'default'
+
 
 #configure php5-fpm
 

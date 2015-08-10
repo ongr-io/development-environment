@@ -1,19 +1,16 @@
 server {
   listen *:80;
-  server_name           ongr.dev;
+  server_name           <%= @server_name %>;
 
-  root /srv/www/ongr_sandbox/current/web/;
-  set $maintenance "off";
-  if ($maintenance = "on") {
-      return 503;
-  }
+  root <%= @docroot %>;
+
   index  app_dev.php app.php;
 
-  access_log            /var/log/nginx/ongr.dev.access.log combined;
-  error_log             /var/log/nginx/ongr.dev.error.log;
+  access_log            /var/log/nginx/<%= @server_name %>.access.log combined;
+  error_log             /var/log/nginx/<%= @server_name %>.error.log;
 
   location ~ \.php$ {
-    root      /srv/www/ongr_sandbox/current/web/;
+    root      <%= @docroot %>;
     index     app_dev.php app.php;
     fastcgi_index app_dev.php;
     fastcgi_param PATH_INFO $fastcgi_path_info;
