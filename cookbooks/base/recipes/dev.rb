@@ -13,7 +13,7 @@ end
 
 nginx_site 'ongr.dev'
 
-file '/etc/nginx/sites-available/default' do
+cookbook_file '/etc/nginx/sites-available/default' do
   source "default"
   owner 'root'
   group 'root'
@@ -82,11 +82,12 @@ mysql_service 'default' do
   action [:create, :start]
 end
 
-# execute 'setup_ongr_database' do
-#   command 'mysql -h #{node[:ongr][:mysql_host]} -u#{node[:ongr][:mysql_username]} -p#{node[:ongr][:mysql_password]} -e \"CREATE DATABASE #{node[:ongr][:mysql_database]};\"'
-#   not_if 'mysql -h #{node[:ongr][:mysql_host]} -u#{node[:ongr][:mysql_username]} -p#{node[:ongr][:mysql_password]} -B -N -e \"SHOW DATABASES like \'#{node[:ongr][:mysql_database]}\';\"'
-#   action :run
-# end
+bash 'create ongr database' do
+  code <<-EOF
+    mysql -h #{node[:ongr][:mysql_host]} -u#{node[:ongr][:mysql_username]} -p#{node[:ongr][:mysql_password]} -e "CREATE DATABASE #{node[:ongr][:mysql_database]} "
+  EOF
+  not_if { Dir.exist?("/var/lib/mysql-default/#{node[:ongr][:mysql_database]})")}
+end
 
 #dev user
 user "dev" do
@@ -125,4 +126,26 @@ end
 
 service "php5-fpm" do
   restart_command "service php5-fpm restart"
+end
+
+#fix dev ownership
+
+execute "change ownership" do
+  command "chown -R web:dev /srv/www/"
+  user "root"
+  action :run
+  not_if "stat -c %U /srv/www/ |grep web"
+end
+
+execute "fix permissions" do
+  command "chmod -R g+wx /srv/www/* && chmod -R g+s /srv/www/"
+  user "root"
+  action :run
+end
+
+file "/srv/www/current/wiubewfngreitewichruetiuwe.php" do
+  content '<?php opcache_reset(); ?>'
+  mode '0644'
+  owner 'web'
+  group 'dev'
 end

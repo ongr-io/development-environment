@@ -9,6 +9,4 @@ run_list(
     "recipe[java]",
     "recipe[elasticsearch]",
     "recipe[base::dev]",
-#    "recipe[deploy::default]",
-#    "recipe[base::deploy]"
   )

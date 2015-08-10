@@ -14,4 +14,3 @@ cookbook 'ssh_authorized_keys', '~> 0.2.0'
 cookbook 'base', path: './cookbooks/base/'
 cookbook 'lemp_oxid', path: './cookbooks/lemp_oxid/'
 cookbook 'oxideshop', path: './cookbooks/oxideshop/'
-#cookbook "deploy", git: "https://github.com/aws/opsworks-cookbooks.git",  branch: "release-chef-11.10", rel: "deploy"
