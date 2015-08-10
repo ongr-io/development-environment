@@ -86,7 +86,7 @@ bash 'create ongr database' do
   code <<-EOF
     mysql -h #{node[:ongr][:mysql_host]} -u#{node[:ongr][:mysql_username]} -p#{node[:ongr][:mysql_password]} -e "CREATE DATABASE #{node[:ongr][:mysql_database]} "
   EOF
-  not_if { Dir.exist?("/var/lib/mysql-default/#{node[:ongr][:mysql_database]})")}
+not_if { Dir.exist?("/var/lib/mysql-default/#{node[:ongr][:mysql_database]})")}
 end
 
 #dev user
@@ -138,7 +138,7 @@ execute "change ownership" do
 end
 
 execute "fix permissions" do
-  command "chmod -R g+wx /srv/www/* && chmod -R g+s /srv/www/"
+  command "chmod -R g+wx /srv/www/ && chmod -R g+s /srv/www/"
   user "root"
   action :run
 end
