@@ -84,9 +84,8 @@ end
 
 bash 'create ongr database' do
   code <<-EOF
-    mysql -h #{node[:ongr][:mysql_host]} -u#{node[:ongr][:mysql_username]} -p#{node[:ongr][:mysql_password]} -e "CREATE DATABASE #{node[:ongr][:mysql_database]} "
+    mysql -h #{node[:ongr][:mysql_host]} -u#{node[:ongr][:mysql_username]} -p#{node[:ongr][:mysql_password]} -e "CREATE DATABASE IF NOT EXISTS #{node[:ongr][:mysql_database]} "
   EOF
-not_if { Dir.exist?("/var/lib/mysql-default/#{node[:ongr][:mysql_database]})")}
 end
 
 #dev user
@@ -128,24 +127,46 @@ service "php5-fpm" do
   restart_command "service php5-fpm restart"
 end
 
-#fix dev ownership
+# #deploy app
 
-execute "change ownership" do
-  command "chown -R web:dev /srv/www/"
-  user "root"
-  action :run
-  not_if "stat -c %U /srv/www/ |grep web"
-end
+# directory '/srv/www/ongr_sandbox/current/' do
+#   owner 'web'
+#   group 'dev'
+#   mode '0755'
+#   recursive true
+#   action :create
+# end
 
-execute "fix permissions" do
-  command "chmod -R g+wx /srv/www/ && chmod -R g+s /srv/www/"
-  user "root"
-  action :run
-end
+# remote_file '/tmp/ongr-sandbox.tar.gz' do
+#   source 'https://ongr-jenkins.s3.amazonaws.com/ongr-sandbox.tar.gz'
+# end
 
-file "/srv/www/current/wiubewfngreitewichruetiuwe.php" do
-  content '<?php opcache_reset(); ?>'
-  mode '0644'
-  owner 'web'
-  group 'dev'
-end
+# tarball '/tmp/ongr-sandbox.tar.gz' do
+#   destination '/srv/www/ongr_sandbox/current' 
+#   owner 'web'
+#   group 'dev'
+#   umask 002            
+#   action :extract
+# end
+
+# #fix dev ownership
+
+# execute "change ownership" do
+#   command "chown -R web:dev /srv/www/ongr_sandbox"
+#   user "root"
+#   action :run
+#   not_if "stat -c %U /srv/www/ongr_sandbox |grep web"
+# end
+
+# execute "fix permissions" do
+#   command "chmod -R g+wx /srv/www/ongr_sandbox/releases/* && chmod -R g+s /srv/www/ongr_sandbox/"
+#   user "root"
+#   action :run
+# end
+
+# file "/srv/www/ongr_sandbox/current/wiubewfngreitewichruetiuwe.php" do
+#   content '<?php opcache_reset(); ?>'
+#   mode '0644'
+#   owner 'web'
+#   group 'dev'
+# end

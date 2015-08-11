@@ -1,3 +1,4 @@
+#S3 bucket settings
 default['base']['access_key'] = "insert your S3 bucket user access key"
 default['base']['secret_key'] = "insert your S3 bucket user secret key"
 
@@ -11,4 +12,4 @@ default['base']['secret_key'] = "insert your S3 bucket user secret key"
 #nginx vhost settings
 
 default['base']['server_name'] = "ongr.dev"
-default['base']['docroot'] = "/srv/www/current/web/"
+default['base']['docroot'] = "/srv/www/ongr_sandbox/current/web/"
