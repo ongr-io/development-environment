@@ -5,10 +5,6 @@ template "/etc/nginx/sites-available/ongr.dev" do
   owner 'root'
   group 'root'
   mode '0644'
-  variables ({
-    :server_name => node['base']['server_name'],
-    :docroot => node['base']['docroot']
-    })
 end
 
 nginx_site 'ongr.dev'
@@ -23,6 +19,12 @@ end
 
 nginx_site 'default'
 
+template "/etc/nginx/fastcgi_params" do
+  source "fastcgi_params"
+  owner 'root'
+  group 'root'
+  mode '0644'
+end
 
 #configure php5-fpm
 
@@ -58,13 +60,6 @@ php5_fpm_pool 'www' do
   overwrite true
   action :create
   notifies :restart, "service[php5-fpm]", :delayed
-end
-
-template "/etc/nginx/fastcgi_params" do
-  source "fastcgi_params"
-  owner 'root'
-  group 'root'
-  mode '0644'
 end
 
 cookbook_file '/usr/local/elasticsearch/config/elasticsearch.yml' do
