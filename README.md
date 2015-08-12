@@ -1,6 +1,11 @@
 # Testing vm project
 
 ### Install instructions
+##### 1. The requirements for this project are:
+         * Linux/Unix or OS X based environment.
+         * [Virtualbox](https://www.virtualbox.org/wiki/Downloads)
+         * [Vagrant](https://www.vagrantup.com/downloads.html)
+         *
 ##### There are 3 available chef-roles on this project: jenkins node, dev node with ONGR and oxid e-shop node. To switch between them, uncomment a desired role in the Vagrantfile before running `vagrant up`.
 
 ##### To edit specific values for service configuration files, use the node default attribute files for each node:
