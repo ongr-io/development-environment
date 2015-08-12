@@ -1,28 +1,27 @@
-#configure nginx vhost
+#configure nginx 
 
-cookbook_file '/etc/nginx/sites-available/jenkins.dev' do
-  source "jenkins.dev"
-  owner 'jenkins'
-  group 'jenkins'
+template "/etc/nginx/sites-available/jenkins.dev" do
+  source "jenkins.dev.erb"
+  owner 'root'
+  group 'root'
   mode '0644'
-  action :create
+  variables ({
+    :upstream => node[:jenkins_vhost][:upstream],
+    :server_name => node[:jenkins_vhost][:server_name]
+  })
 end
 
 nginx_site 'jenkins.dev'
 
-file '/etc/nginx/sites-available/default' do
-	action :delete
-	notifies :restart, "service[nginx]", :delayed
+cookbook_file '/etc/nginx/sites-available/default' do
+  source "default"
+  owner 'root'
+  group 'root'
+  mode '0644'
+  action :create
 end
 
-#php5 modules
-
-apt_package 'php5-common'
-apt_package 'php5-curl'
-apt_package 'php5-mysql'
-apt_package 'php5-cli'
-apt_package 'php5-gd'
-apt_package 'php5-intl'
+nginx_site 'default'
 
 #jenkins config
 
@@ -79,13 +78,17 @@ template "/var/lib/jenkins/hudson.plugins.s3.S3BucketPublisher.xml" do
   group 'jenkins'
   mode '0644'
   variables ({
-    :access_key => node['base']['access_key'],
-    :secret_key => node['base']['secret_key']
+    :access_key => node[:s3][:access_key],
+    :secret_key => node[:s3][:secret_key]
     })
 end
 
 template "build" do
   source "master_build.xml.erb"
+  variables ({
+    :url => node[:master_build][:url],
+    :cred_id => node[:master_build][:cred_id]
+    })
 end
 
 jenkins_job 'master_build' do

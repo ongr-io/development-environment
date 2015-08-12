@@ -38,5 +38,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
       chef.node_name = 'ongr.dev'
       chef.roles_path = 'roles'
       chef.add_role('dev')
-  end
+#      chef.add_role('jenkins') 
+#      chef.add_role('oxid') 
+end
 end

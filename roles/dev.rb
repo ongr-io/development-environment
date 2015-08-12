@@ -8,5 +8,5 @@ run_list(
     "recipe[git]",
     "recipe[java]",
     "recipe[elasticsearch]",
-    "recipe[base::dev]",
+    "recipe[dev]",
   )

@@ -8,8 +8,8 @@
     <configVersion>2</configVersion>
     <userRemoteConfigs>
       <hudson.plugins.git.UserRemoteConfig>
-        <url>git@github.com:kazgurs/ongr-sandbox.git</url>
-        <credentialsId>cd1266eb-e062-4702-a6c0-6a536f3fbc71</credentialsId>
+        <url><%= node['master_build']['url'] %></url>
+        <credentialsId><%= node['master_build']['cred_id'] %></credentialsId>
       </hudson.plugins.git.UserRemoteConfig>
     </userRemoteConfigs>
     <branches>

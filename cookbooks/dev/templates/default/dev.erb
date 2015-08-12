@@ -9,6 +9,12 @@ server {
   access_log            /var/log/nginx/<%= @server_name %>.access.log combined;
   error_log             /var/log/nginx/<%= @server_name %>.error.log;
 
+  location ~ /\. {
+    access_log off;
+    log_not_found off; 
+    deny all;
+  }
+
   location ~ \.php$ {
     root      <%= @docroot %>;
     index     app_dev.php app.php;
@@ -19,6 +25,8 @@ server {
     fastcgi_pass unix:/var/run/php5-fpm.sock;
     fastcgi_split_path_info ^(.+\.php)(/.+)$;
     include fastcgi_params;
+    server_tokens off;
   }
   try_files $uri $uri/ /app_dev.php?$args;
+
 }

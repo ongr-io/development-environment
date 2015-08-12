@@ -1,5 +1,5 @@
-name "dev-vm"
-description "A testing vm with LEMP"
+name "jenkins-vm"
+description "A testing vm with jenkins"
 run_list(
     "recipe[nginx]",
     "recipe[php5-fpm::install]",    
@@ -8,5 +8,6 @@ run_list(
     "recipe[jenkins::java]",
     "recipe[jenkins::master]",
     "recipe[readline]",
-    "recipe[base::jenkins]"
+    "recipe[git]",
+    "recipe[myjenkins]"
   )

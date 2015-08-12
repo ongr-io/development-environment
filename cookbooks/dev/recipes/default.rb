@@ -1,10 +1,14 @@
-#configure nginx vhost
+#configure nginx
 
 template "/etc/nginx/sites-available/ongr.dev" do
   source "dev.erb"
   owner 'root'
   group 'root'
   mode '0644'
+  variables ({
+    :server_name => node[:vhost][:server_name],
+    :docroot => node[:vhost][:docroot]
+  })
 end
 
 nginx_site 'ongr.dev'
@@ -20,20 +24,22 @@ end
 nginx_site 'default'
 
 template "/etc/nginx/fastcgi_params" do
-  source "fastcgi_params"
+  source "fastcgi_params.erb"
   owner 'root'
   group 'root'
   mode '0644'
+  variables ({
+    :path_translated => node[:fastcgi_params][:path_translated],
+    :script_filename => node[:fastcgi_params][:script_filename],
+    :script_name => node[:fastcgi_params][:script_name],
+    :request_uri => node[:fastcgi_params][:request_uri],
+    :document_uri => node[:fastcgi_params][:document_uri],
+    :document_root => node[:fastcgi_params][:document_root],
+    :server_protocol => node[:fastcgi_params][:server_protocol]
+  })
 end
 
 #configure php5-fpm
-
-apt_package 'php5-common'
-apt_package 'php5-curl'
-apt_package 'php5-mysql'
-apt_package 'php5-cli'
-apt_package 'php5-gd'
-apt_package 'php5-intl'
 
 directory '/var/log/php-fpm' do
   owner 'root'
@@ -62,12 +68,19 @@ php5_fpm_pool 'www' do
   notifies :restart, "service[php5-fpm]", :delayed
 end
 
-cookbook_file '/usr/local/elasticsearch/config/elasticsearch.yml' do
-  source "elasticsearch.yml"
+#elasticsearch
+
+template '/usr/local/elasticsearch/config/elasticsearch.yml' do
+  source "elasticsearch.yml.erb"
   owner 'elasticsearch'
   group 'elasticsearch'
   mode '0664'
-  action :create
+  variables ({
+    :cluster_name => node[:elasticsearch][:cluster_name],
+    :node_name => node[:elasticsearch][:node_name],
+    :shards => node[:elasticsearch][:shards],
+    :replicas => node[:elasticsearch][:replicas]
+  })
 end
 
 #mysql
@@ -79,7 +92,7 @@ end
 
 bash 'create ongr database' do
   code <<-EOF
-    mysql -h #{node[:ongr][:mysql_host]} -u#{node[:ongr][:mysql_username]} -p#{node[:ongr][:mysql_password]} -e "CREATE DATABASE IF NOT EXISTS #{node[:ongr][:mysql_database]} "
+    mysql -h #{node[:mysql_host]} -u#{node[:mysql_username]} -p#{node[:mysql_password]} -e "CREATE DATABASE IF NOT EXISTS #{node[:mysql_database]} "
   EOF
 end
 
@@ -102,6 +115,7 @@ group 'dev' do
   append true
 end
 
+#umasks
 ruby_block "insert dev umask" do
   block do
     file = Chef::Util::FileEdit.new("/home/dev/.bashrc")
@@ -122,6 +136,7 @@ service "php5-fpm" do
   restart_command "service php5-fpm restart"
 end
 
+#DEPLOYMENT TEMPORARILY DISABLED FOR DEBUGGING PURPOSES
 # #deploy app
 
 # directory '/srv/www/ongr_sandbox/current/' do
