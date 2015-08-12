@@ -3,7 +3,7 @@
 ### Install instructions
 ##### There are 3 available chef-roles on this project: jenkins node, dev node with ONGR and oxid e-shop node. To switch between them, uncomment a desired role in the Vagrantfile before running `vagrant up`.
 
-##### To edit specific values for service configuration files, use the node specific attribute files for each node:
+##### To edit specific values for service configuration files, use the node default attribute files for each node:
 * [dev node attributes](cookbooks/dev/attributes/default.rb)
 * [jenkins node attributes](cookbooks/myjenkins/attributes/default.rb)
 * [dev node attributes](cookbooks/oxideshop/attributes/default.rb)
