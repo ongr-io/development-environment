@@ -14,14 +14,6 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   config.vm.define "dev" do |dev|
     dev.vm.box = 'ubuntu/trusty64'
 
-    if Vagrant.has_plugin?("vagrant-cachier")
-      config.cache.scope = :box
-      config.cache.synced_folder_opts = {
-      type: :nfs,
-      mount_options: ['rw', 'vers=3', 'tcp', 'nolock']
-    }
-    end
-
     config.vm.network :private_network, ip: '192.168.80.10'
     config.hostsupdater.aliases = ["ongr.dev"]
     config.ssh.forward_agent = true
@@ -46,14 +38,6 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   config.vm.define "jenkins" do |jen|
     jen.vm.box = 'ubuntu/trusty64'
 
-    if Vagrant.has_plugin?("vagrant-cachier")
-      config.cache.scope = :box
-      config.cache.synced_folder_opts = {
-      type: :nfs,
-      mount_options: ['rw', 'vers=3', 'tcp', 'nolock']
-    }
-    end
-
     config.vm.network :private_network, ip: '192.168.80.11'
     config.hostsupdater.aliases = ["jenkins.dev"]
     config.ssh.forward_agent = true
@@ -77,14 +61,6 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   #oxid node
   config.vm.define "oxid" do |oxi|
     oxi.vm.box = 'ubuntu/trusty64'
-
-    if Vagrant.has_plugin?("vagrant-cachier")
-      config.cache.scope = :box
-      config.cache.synced_folder_opts = {
-      type: :nfs,
-      mount_options: ['rw', 'vers=3', 'tcp', 'nolock']
-    }
-    end
 
     config.vm.network :private_network, ip: '192.168.80.12'
     config.hostsupdater.aliases = ["oxid.dev"]
