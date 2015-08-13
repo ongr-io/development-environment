@@ -13,12 +13,12 @@
   * [jenkins node attributes](cookbooks/myjenkins/attributes/default.rb)
   * [dev node attributes](cookbooks/oxideshop/attributes/default.rb)
 
-4. When you have desired settings layed out go ahead and spin up a desired node:
-```
-vagrant up dev
-vagrant up jenkins
-vagrant up oxid
-```
+4. When you have desired settings layed out go ahead and spin up a specific node:
+ ```
+ vagrant up dev
+ vagrant up jenkins
+ vagrant up oxid
+ ```
 or to start all 3 nodes simultaneously, simply run `vagrant up`. 
 ### What's inside
 
