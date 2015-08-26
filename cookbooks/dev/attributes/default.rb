@@ -42,6 +42,17 @@ default[:php_fpm][:config] =
 		"events.mechanism": "NOT_SET"
 	}
 }'
+
+#php.ini
+default[:opcache][:enable] = "1"
+default[:opcache][:memory_consumption] = "256"
+default[:opcache][:interned_strings_buffer] = "16"
+default[:opcache][:max_accelerated_files] = "9600"
+default[:opcache][:validate_timestamps] = "1"
+default[:opcache][:revalidate_freq] = "0"
+default[:opcache][:fast_shutdown] = "1"
+
+
 ##elasticsearch
 default[:elasticsearch][:cluster_name] = "ongr"
 default[:elasticsearch][:node_name] = "web"

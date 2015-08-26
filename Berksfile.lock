@@ -36,6 +36,7 @@ GRAPH
     windows (>= 0.0.0)
   curl (2.0.1)
   dev (0.1.0)
+    elasticsearch (>= 0.0.0)
     mysql (>= 0.0.0)
     nginx (>= 0.0.0)
     php5-fpm (>= 0.0.0)

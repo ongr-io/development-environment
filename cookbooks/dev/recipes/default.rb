@@ -68,6 +68,23 @@ php5_fpm_pool 'www' do
   notifies :restart, "service[php5-fpm]", :delayed
 end
 
+template "/etc/php5/fpm/php.ini" do
+  source "php.ini.erb"
+  owner 'root'
+  group 'root'
+  mode '0644'
+  variables ({
+    :opcace...
+      })
+end
+
+file "/usr/share/nginx/opreset.php" do
+  content '<?php opcache_reset(); ?>'
+  mode '0644'
+  owner 'root'
+  group 'root'
+end
+
 #elasticsearch
 
 template '/usr/local/elasticsearch/config/elasticsearch.yml' do
@@ -135,25 +152,3 @@ end
 service "php5-fpm" do
   restart_command "service php5-fpm restart"
 end
-
-# #fix dev ownership
-
-# execute "change ownership" do
-#   command "chown -R web:dev /srv/www/ongr_sandbox"
-#   user "root"
-#   action :run
-#   not_if "stat -c %U /srv/www/ongr_sandbox |grep web"
-# end
-
-# execute "fix permissions" do
-#   command "chmod -R g+wx /srv/www/ongr_sandbox/releases/* && chmod -R g+s /srv/www/ongr_sandbox/"
-#   user "root"
-#   action :run
-# end
-
-# file "/srv/www/ongr_sandbox/current/wiubewfngreitewichruetiuwe.php" do
-#   content '<?php opcache_reset(); ?>'
-#   mode '0644'
-#   owner 'web'
-#   group 'dev'
-# end
