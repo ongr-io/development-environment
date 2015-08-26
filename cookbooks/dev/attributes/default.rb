@@ -55,3 +55,7 @@ default[:mysql_username]  =  "root"
 default[:mysql_password]  =  "root"
 default[:mysql_database]  =  "ongr"
 
+#java
+
+default[:java][:jdk_version] = "7"
+

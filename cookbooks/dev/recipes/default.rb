@@ -136,29 +136,6 @@ service "php5-fpm" do
   restart_command "service php5-fpm restart"
 end
 
-#DEPLOYMENT TEMPORARILY DISABLED FOR DEBUGGING PURPOSES
-# #deploy app
-
-# directory '/srv/www/ongr_sandbox/current/' do
-#   owner 'web'
-#   group 'dev'
-#   mode '0755'
-#   recursive true
-#   action :create
-# end
-
-# remote_file '/tmp/ongr-sandbox.tar.gz' do
-#   source 'https://ongr-jenkins.s3.amazonaws.com/ongr-sandbox.tar.gz'
-# end
-
-# tarball '/tmp/ongr-sandbox.tar.gz' do
-#   destination '/srv/www/ongr_sandbox/current' 
-#   owner 'web'
-#   group 'dev'
-#   umask 002            
-#   action :extract
-# end
-
 # #fix dev ownership
 
 # execute "change ownership" do
