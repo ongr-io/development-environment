@@ -1,6 +1,14 @@
 
 #fix dev ownership
 
+
+deploy 'ongr_sandbox' do
+  repo 'git@github.com:kazgurs/ongr-sandbox.git'
+  user 'dev'
+  deploy_to '/srv/www/ongr_sandbox/current/'
+  action :deploy
+end
+
 execute "change ownership" do
   command "chown -R web:dev /srv/www/ongr_sandbox"
   user "root"

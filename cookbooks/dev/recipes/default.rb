@@ -74,7 +74,13 @@ template "/etc/php5/fpm/php.ini" do
   group 'root'
   mode '0644'
   variables ({
-    :opcace...
+    :enable => node[:opcache][:enable],
+    :memory_consumption => node[:opcache][:memory_consumption],
+    :interned_strings_buffer => node[:opcache][:interned_strings_buffer],
+    :max_accelerated_files => node[:opcache][:max_accelerated_files],
+    :validate_timestamps => node[:opcache][:validate_timestamps],
+    :revalidate_freq => node[:opcache][:revalidate_freq],
+    :fast_shutdown => node[:opcache][:fast_shutdown]
       })
 end
 
@@ -119,6 +125,14 @@ user "dev" do
   comment 'Developer user'
   home '/home/dev'
   shell '/bin/bash'
+end
+
+cookbook_file '/home/dev/.ssh/id_rsa' do
+  source "id_rsa"
+  owner 'dev'
+  group 'dev'
+  mode '0600'
+  action :create
 end
 
 ssh_authorize_key 'dev' do
