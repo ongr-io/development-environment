@@ -9,5 +9,5 @@ run_list(
     "recipe[git]",
     "recipe[java]",
     "recipe[dev]",
-    "recipe[deploy]",
+    "recipe[dev::deploy]",
   )

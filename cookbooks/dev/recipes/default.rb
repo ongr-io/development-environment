@@ -106,6 +106,10 @@ template '/usr/local/elasticsearch/config/elasticsearch.yml' do
   })
 end
 
+service "elasticsearch" do
+  restart_command "service elasticsearch restart"
+end
+
 #mysql
 mysql_service 'default' do
   version '5.5'
@@ -127,6 +131,17 @@ user "dev" do
   shell '/bin/bash'
 end
 
+group 'dev' do
+  action :modify
+  members "web"
+  append true
+end
+
+ssh_authorize_key 'dev' do
+  key 'AAAAB3NzaC1yc2EAAAADAQABAAABAQCjYSAjen018JnUF07xcT9QizLWxDcNYbr26yPTkvkE6Ztph1u+ChrfgRP/cryGedNmhy/q0VMelIPMuaz4hBnuBnff8YetCOXHeDtTKELMSE5RKdd5ry3ShSBSH7BPLMhCj7TPm9rA/YgbQLVyRyuc04Z9fNh1Uu8S1B6d2CWOTjrHVGMXnNvQFTJF1UFkf34rSv4jfUOT490B/yzyfvQ5mttbAuHYuH6CXALCCZb2e9va1fOV6QofFVn6wngDZpmDTsmbTNQ7ZrLZL0v65Zppu+z/Tc696wJrxk5cPTbAQNut+NF6Ks9OkQlIsvtwDvfK8ZirHkp6Xkg+qDq2jvSj'
+  user 'dev'
+end
+
 cookbook_file '/home/dev/.ssh/id_rsa' do
   source "id_rsa"
   owner 'dev'
@@ -135,15 +150,12 @@ cookbook_file '/home/dev/.ssh/id_rsa' do
   action :create
 end
 
-ssh_authorize_key 'dev' do
-  key 'AAAAB3NzaC1yc2EAAAADAQABAAABAQCjYSAjen018JnUF07xcT9QizLWxDcNYbr26yPTkvkE6Ztph1u+ChrfgRP/cryGedNmhy/q0VMelIPMuaz4hBnuBnff8YetCOXHeDtTKELMSE5RKdd5ry3ShSBSH7BPLMhCj7TPm9rA/YgbQLVyRyuc04Z9fNh1Uu8S1B6d2CWOTjrHVGMXnNvQFTJF1UFkf34rSv4jfUOT490B/yzyfvQ5mttbAuHYuH6CXALCCZb2e9va1fOV6QofFVn6wngDZpmDTsmbTNQ7ZrLZL0v65Zppu+z/Tc696wJrxk5cPTbAQNut+NF6Ks9OkQlIsvtwDvfK8ZirHkp6Xkg+qDq2jvSj'
-  user 'dev'
-end
 
-group 'dev' do
-  action :modify
-  members "web"
-  append true
+file '/home/dev/.ssh/config' do
+  owner 'dev'
+  group 'dev'
+  mode '0600'
+  content "Host *\n\tStrictHostKeyChecking no\n"
 end
 
 #umasks
