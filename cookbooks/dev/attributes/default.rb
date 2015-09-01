@@ -23,7 +23,7 @@ default[:fastcgi_params][:server_protocol] = "$server_protocol"
 ##php5-fpm
 
 default[:php_fpm][:install_php_modules] = "true"
-default[:php_fpm][:php_modules] = ["php5-common","php5-mysql","php5-curl","php5-gd", "php5-gd", "php5-intl", "php5-xdebug"]
+default[:php_fpm][:php_modules] = ["php5-mysql", "php5-cli", "php5-curl", "php5-intl", "php5-gd", "php5-mcrypt", "php5-common", "php5-xdebug"]
 default[:php_fpm][:config] = 
 '{ 	"config":
 	{

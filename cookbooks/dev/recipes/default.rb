@@ -91,6 +91,13 @@ file "/usr/share/nginx/opreset.php" do
   group 'root'
 end
 
+file '/usr/local/bin/debug' do
+  content "#!/bin/sh\nenv PHP_IDE_CONFIG=\"serverName=ongr\" XDEBUG_CONFIG=\"idekey=PHPSTORM\" SYMFONY_DEBUG=\"1\" $@"
+  mode '0755'
+  owner 'root'
+  group 'root'
+end
+
 #elasticsearch
 
 elasticsearch_user 'elasticsearch' do
