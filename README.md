@@ -11,7 +11,7 @@
 3. To edit specific values for service configuration files, use the node default attribute files for each node:
   * [dev node attributes](cookbooks/dev/attributes/default.rb)
   * [jenkins node attributes](cookbooks/myjenkins/attributes/default.rb)
-  * [dev node attributes](cookbooks/oxideshop/attributes/default.rb)
+  * [oxid node attributes](cookbooks/oxideshop/attributes/default.rb)
 
 4. When you have desired settings layed out go ahead and spin up a specific node:
  ```
