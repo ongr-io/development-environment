@@ -70,3 +70,19 @@ default[:mysql_database]  =  "ongr"
 
 default[:java][:jdk_version] = "7"
 
+#xdebug
+
+default[:xdebug][:version] = 'latest'
+default[:xdebug][:config_file] = '/etc/php5/mods-available/xdebug.ini'
+default[:xdebug][:web_server][:service_name] = 'nginx'
+default[:xdebug][:directives] = {
+	"default_enable" 	  => 1,
+	"max_nesting_level"   => 250,
+	"remote_autostart" 	  => 0,
+	"remote_connect_back" => 1,
+	"remote_enable" 	  => 1,
+	"remote_handler"      => "dbgp",
+	"remote_port" 		  => 9000,
+	"remote_host"		  => "192.168.33.10"
+}
+

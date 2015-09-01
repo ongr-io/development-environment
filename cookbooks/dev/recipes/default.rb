@@ -120,6 +120,10 @@ elasticsearch_plugin 'mobz/elasticsearch-head' do
   plugin_dir '/usr/local/elasticsearch/plugins'
 end
 
+elasticsearch_plugin 'elasticsearch/marvel/latest' do
+  plugin_dir '/usr/local/elasticsearch/plugins'
+end
+
 template '/usr/local/elasticsearch/config/elasticsearch.yml' do
   source "elasticsearch.yml.erb"
   owner 'elasticsearch'
@@ -182,7 +186,6 @@ cookbook_file '/home/dev/.ssh/id_rsa' do
   mode '0600'
   action :create
 end
-
 
 file '/home/dev/.ssh/config' do
   owner 'dev'

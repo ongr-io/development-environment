@@ -7,6 +7,8 @@ run_list(
     "recipe[composer]",
     "recipe[git]",
     "recipe[java]",
+    "recipe[xdebug]",
+    "recipe[phantomjs]"
     "recipe[dev]",
     "recipe[dev::deploy]",
   )
