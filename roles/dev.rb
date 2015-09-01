@@ -5,7 +5,6 @@ run_list(
     "recipe[php5-fpm::install]",
     "recipe[nodejs::install_from_package]",    
     "recipe[composer]",
-    "recipe[elasticsearch]",
     "recipe[git]",
     "recipe[java]",
     "recipe[dev]",

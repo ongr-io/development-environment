@@ -93,6 +93,33 @@ end
 
 #elasticsearch
 
+elasticsearch_user 'elasticsearch' do
+  username 'elasticsearch'
+  groupname 'elasticsearch'
+  homedir '/usr/local/elasticsearch'
+  shell '/bin/bash'
+  comment 'Elasticsearch User'
+
+  action :create
+end
+
+elasticsearch_install 'install_es' do
+  type :tarball 
+  dir '/usr/local'
+  owner 'elasticsearch' 
+  group 'elasticsearch'
+  version '1.7.1'
+  tarball_url 'https://download.elastic.co/elasticsearch/elasticsearch/elasticsearch-1.7.1.tar.gz'
+  tarball_checksum '86a0c20eea6ef55b14345bff5adf896e6332437b19180c4582a346394abde019'
+  action :install
+end
+
+elasticsearch_configure 'elasticsearch'
+
+elasticsearch_plugin 'mobz/elasticsearch-head' do
+  plugin_dir '/usr/local/elasticsearch/plugins'
+end
+
 template '/usr/local/elasticsearch/config/elasticsearch.yml' do
   source "elasticsearch.yml.erb"
   owner 'elasticsearch'
@@ -106,9 +133,15 @@ template '/usr/local/elasticsearch/config/elasticsearch.yml' do
   })
 end
 
-service "elasticsearch" do
-  restart_command "service elasticsearch restart"
+elasticsearch_service 'elasticsearch'
+
+service 'elasticsearch' do
+  action :start
 end
+
+#bundler
+
+package 'bundler'
 
 #mysql
 mysql_service 'default' do

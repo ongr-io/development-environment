@@ -13,7 +13,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   config.vm.define "dev" do |dev|
     dev.vm.box = 'ubuntu/trusty64'
 
-    config.vm.network :private_network, ip: '192.168.80.10'
+    config.vm.network :private_network, ip: '192.168.33.10'
     config.hostsupdater.aliases = ["ongr.dev"]
     config.ssh.forward_agent = true
     config.vm.provider :virtualbox do |v|
@@ -37,7 +37,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   config.vm.define "jenkins" do |jen|
     jen.vm.box = 'ubuntu/trusty64'
 
-    config.vm.network :private_network, ip: '192.168.80.11'
+    config.vm.network :private_network, ip: '192.168.33.12'
     config.hostsupdater.aliases = ["jenkins.dev"]
     config.ssh.forward_agent = true
     config.vm.provider :virtualbox do |v|
@@ -61,7 +61,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   config.vm.define "oxid" do |oxi|
     oxi.vm.box = 'ubuntu/trusty64'
 
-    config.vm.network :private_network, ip: '192.168.80.12'
+    config.vm.network :private_network, ip: '192.168.33.13'
     config.hostsupdater.aliases = ["oxid.dev"]
     config.ssh.forward_agent = true
     config.vm.provider :virtualbox do |v|
