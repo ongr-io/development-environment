@@ -11,3 +11,4 @@ Berksfile.lock
 
 ##kitchen
 /.kitchen/
+.kitchen.local.yml

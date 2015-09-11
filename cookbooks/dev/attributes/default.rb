@@ -54,10 +54,12 @@ default[:opcache][:fast_shutdown] = "1"
 
 
 ##elasticsearch
+default.elasticsearch[:version] = "1.7.1"
 default[:elasticsearch][:cluster_name] = "ongr"
 default[:elasticsearch][:node_name] = "web"
 default[:elasticsearch][:shards] = "2"
 default[:elasticsearch][:replicas] = "0"
+node.default.elasticsearch[:plugin][:mandatory] = ["marvel", "elasticsearch-head"]
 
 ##ongr_database settings
 
