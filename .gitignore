@@ -7,4 +7,7 @@
 .chef/encrypted_data_bag_secret
 
 /.vagrant/
-.Berksfile.lock
+Berksfile.lock
+
+##kitchen
+/.kitchen/
