@@ -1,0 +1,157 @@
+{
+  "AWSTemplateFormatVersion": "2010-09-09",
+  "Resources": {
+    "ongrjenkins": {
+      "Type": "AWS::OpsWorks::Stack",
+      "Properties": {
+        "CustomJson": {
+          "php5-fpm": {
+            "install_php_modules": true
+          }
+        },
+        "DefaultAvailabilityZone": "eu-central-1a",
+        "DefaultInstanceProfileArn": 
+"arn:aws:iam::995884410452:instance-profile/aws-opsworks-ec2-role",
+        "DefaultOs": "Ubuntu 14.04 LTS",
+        "DefaultSubnetId": "subnet-c2c20cab",
+        "Name": "ongr-jenkins",
+        "HostnameTheme": "Layer_Dependent",
+        "ServiceRoleArn": 
+"arn:aws:iam::995884410452:role/aws-opsworks-service-role",
+        "UseCustomCookbooks": "true",
+        "CustomCookbooksSource": {
+            "Type": "git",
+            "Url": "git://github.com/kazgurs/testing-vm.git",
+            "Revision": "AWS"
+            },
+        "UseOpsworksSecurityGroups": "true",
+        "VpcId": "vpc-bc13d6d5",
+        "Attributes": {
+          "Color": "rgb(209, 105, 41)"
+        },
+        "ChefConfiguration": {
+          "BerkshelfVersion": "3.2.0",
+          "ManageBerkshelf": "true"
+        },
+        "ConfigurationManager": {
+          "Name": "Chef",
+          "Version": "11.10"
+        }
+      }
+    },
+    "appongrsandbox2": {
+      "Type": "AWS::OpsWorks::App",
+      "Properties": {
+        "Name": "ongr-sandbox",
+        "Shortname": "ongr_sandbox",
+        "Type": "other",
+        "StackId": {
+          "Ref": "ongrjenkins"
+        },
+        "AppSource": {
+          "Password": "",
+          "Type": "s3",
+          "Url": 
+"https://ongr-jenkins.s3.amazonaws.com/ongr-sandbox.tar.gz",
+          "Username": ""
+        },
+        "Attributes": {
+          "AutoBundleOnDeploy": "true",
+          "AwsFlowRubySettings": "{}",
+          "DataSource": ""
+        }
+      }
+    },
+    "layerDev3": {
+      "Type": "AWS::OpsWorks::Layer",
+      "Properties": {
+        "AutoAssignElasticIps": "false",
+        "AutoAssignPublicIps": "true",
+        "EnableAutoHealing": "true",
+        "Name": "Dev",
+        "Shortname": "dev",
+        "Type": "custom",
+        "StackId": {
+          "Ref": "ongrjenkins"
+        },
+        "CustomRecipes": {
+          "Setup": [
+            "nginx::default",
+            "php5-fpm::install",
+            "nodejs::install_from_package",
+            "java::default",
+            "elasticsearch::default",
+            "composer::default",
+            "git::default",
+            "xdebug::default",
+            "phantomjs::default",
+            "dev::default"
+          ],
+          "Deploy": [
+            "dev::deploy"
+          ]
+        }
+      },
+      "DependsOn": [
+        "appongrsandbox2"
+      ]
+    },
+    "layerJenkins4": {
+      "Type": "AWS::OpsWorks::Layer",
+      "Properties": {
+        "AutoAssignElasticIps": "false",
+        "AutoAssignPublicIps": "true",
+        "EnableAutoHealing": "true",
+        "Name": "Jenkins",
+        "Shortname": "jen",
+        "Type": "custom",
+        "StackId": {
+          "Ref": "ongrjenkins"
+        },
+        "CustomRecipes": {
+          "Setup": [
+            "nginx::default",
+            "elasticsearch::default",
+            "jenkins::java",
+            "jenkins::master",
+            "composer::install",
+            "php5-fpm::install",
+            "readline::default",
+            "git::default",
+            "myjenkins::default"
+          ]
+        }
+      },
+      "DependsOn": [
+        "appongrsandbox2"
+      ]
+    },
+    "layerOxid5": {
+      "Type": "AWS::OpsWorks::Layer",
+      "Properties": {
+        "AutoAssignElasticIps": "false",
+        "AutoAssignPublicIps": "true",
+        "EnableAutoHealing": "true",
+        "Name": "Oxid",
+        "Shortname": "oxi",
+        "Type": "custom",
+        "StackId": {
+          "Ref": "ongrjenkins"
+        },
+        "CustomRecipes": {
+          "Setup": [
+            "composer::install",
+            "nginx::default",
+            "php5-fpm::install",
+            "lemp_oxid::default",
+            "oxideshop::default"
+          ]
+        }
+      },
+      "DependsOn": [
+        "appongrsandbox2"
+      ]
+    }
+  },
+  "Description": "This is used to deploy an AWS stack for the ONGR demo application."
+}
