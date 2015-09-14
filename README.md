@@ -2,17 +2,12 @@
 
 ### Install instructions
 
-Run the following commands to start project:
+### What's inside
 
-1. `git clone git@github.com:ongr-io/testing-vm.com.git`
-2. `cd testing-vm`
-3. `vagrant up` 
-4. `vagrant ssh`
-
-
-### Troubleshooting 
-
-#### During vagrant up you got some error
-
-Don't worry that could happen because of many reasons, try to run `vagrant provision`. 
-This will try to install what is left.
+* all instances comprise of LEMP stacks with nginx, php5-fpm and MySQL 5.5
+* jenkins stack:
+    * plugins: git, rbenv, ruby-runtime, scm-api, s3
+* ongr stack:
+    * Java 1.7 JDK, elasticsearch 1.7.1, git, composer, nodejs, compass, xdebug, phantomjs
+* oxid stack:
+    * Oxid CE on LEMP stack

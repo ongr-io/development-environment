@@ -1,0 +1,25 @@
+---
+driver:
+  name: vagrant
+
+provisioner:
+  name: chef_solo
+
+platforms:
+  - name: ubuntu-14.04
+
+suites:
+  - name: dev
+    run_list:
+        - recipe[nginx::default]
+        - recipe[php5-fpm::install]
+        - recipe[nodejs::install_from_package]
+        - recipe[composer::default]
+        - recipe[git::default]
+        - recipe[java::default]
+        - recipe[elasticsearch::default]
+        - recipe[xdebug::default]
+        - recipe[phantomjs::default]
+        - recipe[dev::default]
+        - recipe[dev::deploy]
+    attributes:
