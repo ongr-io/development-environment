@@ -17,6 +17,7 @@ suites:
         - recipe[composer::default]
         - recipe[git::default]
         - recipe[java::default]
+        - recipe[elasticsearch::default]
         - recipe[xdebug::default]
         - recipe[phantomjs::default]
         - recipe[dev::default]
