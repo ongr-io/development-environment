@@ -1,4 +1,4 @@
-# Testing vm project
+# ONGR sandbox testing VMs
 
 ### Install instructions
 1. The requirements for this project are:
