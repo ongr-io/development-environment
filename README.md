@@ -2,17 +2,41 @@
 
 ### Install instructions
 
-Run the following commands to start project:
+Run the following commands to start the project:
 
 1. `git clone git@github.com:ongr-io/testing-vm.com.git`
 2. `cd testing-vm`
-3. `vagrant up` 
+3. `vagrant up`
 4. `vagrant ssh`
 
 
-### Troubleshooting 
+### Using together with ONGR sandbox
 
-#### During vagrant up you got some error
+Clone the official ONGR sandbox repo together with this testing-vm:
 
-Don't worry that could happen because of many reasons, try to run `vagrant provision`. 
-This will try to install what is left.
+````
+git clone --recursive https://github.com/ongr-io/ongr-sandbox.git
+````
+Or with:
+````
+git clone https://github.com/ongr-io/ongr-sandbox.git
+git submodule init
+git submodule update
+````
+Then run `vagrant up` inside vagrant subdirectory.
+
+#### What's inside
+
+* Ubuntu Trusty x64
+* LEMP stack: nginx, php5-fpm and MySQL 5.5
+* Java 1.7 JDK,
+* elasticsearch 1.4
+* git
+* composer
+* nodejs
+* bower
+* gulp
+* compass
+* xdebug
+* phantomjs
+* casperjs

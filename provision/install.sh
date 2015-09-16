@@ -34,8 +34,8 @@ if [[ ! -d "$PUPPET_DIR" ]]; then
     echo "Created directory ~/.puppet"
 fi
 
-cp -rf "/vagrant/vagrant/Puppetfile" "$PUPPET_DIR"
-cp -rf "/vagrant/vagrant/Puppetfile.lock" "$PUPPET_DIR"
+cp -rf "/vagrant/provision/Puppetfile" "$PUPPET_DIR"
+cp -rf "/vagrant/provision/Puppetfile.lock" "$PUPPET_DIR"
 
 echo "Installing librarian-puppet modules..."
 cd "$PUPPET_DIR" && librarian-puppet install --verbose > /dev/null
