@@ -3,8 +3,6 @@
 include git
 include composer
 
-Exec["apt-update"] -> Package <| |>
-
 exec { "apt-update":
   command => "/usr/bin/apt-get update"
 }
@@ -80,13 +78,18 @@ nginx::resource::location { "${vhost}-php":
 
 
 class { '::mysql::server':
-  root_password    => 'root',
   override_options => {
     'mysqld' => {
       'log-bin' => 'mysql-bin',
       'binlog_format' => 'ROW'
     }
   }
+}
+
+mysql::db { 'ongr':
+  user     => 'root',
+  password => 'root',
+  host     => 'localhost',
 }
 
 file { "/var/lib/mysql":
@@ -152,7 +155,7 @@ augeas { "custom":
   "set XDEBUG/xdebug.remote_enable 1",
   "set XDEBUG/xdebug.remote_handler dbgp",
   "set XDEBUG/xdebug.remote_port 9000",
-  "set XDEBUG/xdebug.remote_host 192.168.80.1"
+  "set XDEBUG/xdebug.remote_host 192.168.60.1"
   ],
   require => [Class["php"], Package['php5-cli']]
 }
@@ -173,8 +176,9 @@ file { "/etc/php5/fpm/conf.d/custom.ini":
 #Elasticsearch
 class { 'elasticsearch':
   manage_repo  => true,
-  repo_version => '1.4',
+  repo_version => '1.7',
   java_install => true,
+  version => '1.7.1'
 }
 
 elasticsearch::instance { 'ongr-01': }
