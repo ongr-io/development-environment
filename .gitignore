@@ -2,3 +2,4 @@
 /vagrant/.librarian
 /vagrant/.tmp
 /vagrant/modules/*
+!/vagrant/modules/.gitkeep
