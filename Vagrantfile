@@ -25,10 +25,6 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     puppet.facter = { "ssh_username" => "vagrant", "vhost" => config.vm.hostname }
     puppet.options = ["--verbose", "--debug", "--parser future"]
   end
-
-  config.ssh.shell = "bash -l"
-  config.ssh.keep_alive = true
-  config.ssh.forward_agent = false
-  config.ssh.forward_x11 = false
+  
   config.vagrant.host = :detect
 end
