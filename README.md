@@ -4,11 +4,10 @@
 
 Run the following commands to start the project:
 
-1. `git clone git@github.com:ongr-io/testing-vm.com.git`
+1. `git clone https://github.com/ongr-io/testing-vm.git`
 2. `cd testing-vm`
 3. `vagrant up`
 4. `vagrant ssh`
-
 
 ### Using together with ONGR sandbox
 
