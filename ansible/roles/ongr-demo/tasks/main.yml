@@ -1,0 +1,60 @@
+---
+# app tasks to be customized and to run after the main provision
+
+- name: Check index status
+  shell: "curl -s localhost:9200/_cat/indices?v | grep -q ongr"
+  ignore_errors: true
+  register: index_status
+  changed_when: False
+
+- name: Check vendor dir
+  shell: "ls {{ base.projectdir }}/vendor"
+  ignore_errors: true
+  register: project_ls
+  changed_when: False
+
+- name: Install NPM Packages from package.json
+  command: npm install
+  args:
+    chdir: "{{ base.projectdir }}"
+  when: project_ls|failed
+
+- name: Rebuild node-sass
+  command: npm rebuild node-sass
+  args:
+    chdir: "{{ base.projectdir }}"
+  when: project_ls|failed
+
+- name: Install via composer
+  command: "composer install -n"
+  args:
+    chdir: "{{ base.projectdir }}"
+  when: project_ls|failed
+
+- name: Bower install
+  command: "bower install"
+  args:
+    chdir: "{{ base.projectdir }}"
+  when: project_ls|failed
+
+- name: Assetic
+  command: "npm run-script assets"
+  args:
+    chdir: "{{ base.projectdir }}"
+  when: project_ls|failed
+
+- name: Create index
+  command: php app/console ongr:es:index:create
+  args:
+      chdir: "{{ base.projectdir }}"
+  when: index_status|failed
+
+- name: Import demo data
+  command: php app/console ongr:es:index:import --raw src/ONGR/DemoBundle/Resources/data/{{ item }}.json
+  with_items:
+    - categories
+    - products
+    - contents
+  args:
+      chdir: "{{ base.projectdir }}"
+  when: index_status|failed

@@ -1,0 +1,15 @@
+---
+- hosts: localhost
+  remote_user: root
+  vars_files:
+      - ../vars/vagrant.yml
+  roles:
+    - base
+    - vagrant
+    - nginx
+    - mariadb
+    - elasticsearch
+    - php
+    - xdebug
+    - composer
+    - nodejs

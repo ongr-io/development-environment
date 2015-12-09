@@ -1,5 +1,4 @@
-/.vagrant/
-/vagrant/.librarian
-/vagrant/.tmp
-/vagrant/modules/*
-!/vagrant/modules/.gitkeep
+/.vagrant
+ansible/callback_plugins/profile_tasks.pyc
+html
+public/*

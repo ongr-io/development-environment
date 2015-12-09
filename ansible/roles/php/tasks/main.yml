@@ -1,0 +1,45 @@
+---
+- name: Add ppa Repository
+  apt_repository: repo=ppa:ondrej/{{ php.ppa }}
+
+- name: Update apt
+  apt: update_cache=yes cache_valid_time=86400
+
+- name: Install php5
+  apt: pkg=php5 state=present
+
+- name: Install php5-fpm
+  apt: pkg=php5-fpm state=present
+
+- name: Install PHP Packages
+  apt: pkg={{ item }} state=present
+  with_items: php.packages
+  when: php.packages is defined
+
+- name: ensure timezone is set in cli php.ini
+  lineinfile: dest=/etc/php5/cli/php.ini
+              regexp='date.timezone ='
+              line='date.timezone = {{ base.timezone }}'
+
+- name: enabling opcache cli
+  lineinfile: dest=/etc/php5/cli/php.ini
+              regexp=';?opcache.enable_cli=\d'
+              line='opcache.enable_cli=1'
+
+- name: configure php5-fpm
+  template: src=php-fpm.tpl dest=/etc/php5/fpm/php-fpm.conf
+  notify: restart php5-fpm
+
+- name: configure fpm pool
+  template: src=pool.tpl dest=/etc/php5/fpm/pool.d/www.conf
+  notify: restart php5-fpm
+
+- name: Add php-fpm umask
+  lineinfile: dest=/etc/init/php5-fpm.conf line="umask 0002"
+  notify: restart php5-fpm
+
+- name: configure php.ini
+  template: src=php.ini.tpl dest=/etc/php5/fpm/php.ini
+  notify: restart php5-fpm
+
+- include: pecl.yml

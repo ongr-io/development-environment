@@ -1,0 +1,23 @@
+---
+- name: Install xDebug
+  apt: pkg=php5-xdebug state=present
+
+- name: Check xdebug on cli
+  shell: php -i | grep xdebug
+  ignore_errors: true
+  register: xdebug_status
+  changed_when: false
+
+- name: Disable xdebug in php-cli
+  shell: php5dismod -s cli xdebug
+  when: xdebug_status|success
+
+- name: Check xdebug binary
+  shell: ls /usr/local/bin/debug
+  ignore_errors: yes
+  register: xdebug_bin
+  changed_when: False
+
+- name: Xdebug binary
+  lineinfile: dest=/usr/local/bin/debug line='#!/bin/sh\nenv PHP_IDE_CONFIG=\"serverName=ongr\" XDEBUG_CONFIG=\"idekey=PHPSTORM\" SYMFONY_DEBUG=\"1\" $@' state=present create=yes owner=root mode=0755
+  when: xdebug_bin|failed
