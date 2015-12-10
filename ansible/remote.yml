@@ -1,0 +1,17 @@
+---
+- hosts: remote
+  sudo: yes
+  vars_files:
+    - vars/remote.yml
+  roles:
+    - base
+    - nginx
+    - mariadb
+    - elasticsearch
+    - php
+    - xdebug
+    - composer
+    - nodejs
+    - remote
+    - fail2ban
+    - { role: ongr-demo, become: yes, become_user: "{{ remote.user }}" }

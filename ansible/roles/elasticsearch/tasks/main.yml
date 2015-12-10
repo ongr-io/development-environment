@@ -1,0 +1,57 @@
+---
+- name: Check ElasticSearch installation
+  shell: apt-cache policy elasticsearch | grep -Po 'Installed:\s(.*)' | cut -d' ' -f 2;
+  changed_when: false
+  register: install_status
+
+- name: Set installed variable
+  set_fact: is_installed='{{ install_status.stdout == elasticsearch.version }}'
+  ignore_errors: yes
+
+- name: Add dependencies repository
+  apt_repository: repo='ppa:webupd8team/java' state=present update_cache=yes
+
+- name: Set oracle License
+  shell: echo debconf shared/accepted-oracle-license-v1-1 select true | debconf-set-selections
+  changed_when: false
+
+- name: Accept oracle License
+  shell: echo debconf shared/accepted-oracle-license-v1-1 seen true | debconf-set-selections
+  changed_when: false
+
+- name: Install Dependencies
+  apt: pkg=oracle-java8-installer state=present
+
+- name: Download
+  get_url: >
+    url={{ elasticsearch_url }}
+    dest=/tmp/elasticsearch-{{ elasticsearch.version }}.deb
+  when: not is_installed
+
+- name: Install
+  apt: deb=/tmp/elasticsearch-{{ elasticsearch.version }}.deb
+  when: not is_installed
+
+- name: Install plugins
+  command: "{{ elasticsearch.pluginpath }} -install {{ item }}"
+  with_items: elasticsearch.plugins
+  register: plugins_installed
+  changed_when: "'Installed' in plugins_installed.stdout"
+  failed_when: "plugins_installed.rc != 0 and plugins_installed.stdout.find('already exists. To update the plugin') == -1"
+
+- name: Configure ES
+  template: src=elasticsearch.yml.tpl dest={{ elasticsearch.configpath }}
+  notify: restart elasticsearch
+
+- name: Flush handlers to apply config changes
+  meta: flush_handlers
+
+- name: Enable Service
+  service: name=elasticsearch enabled=yes
+
+- name: Ensure Elastic Search is started
+  service: name=elasticsearch state=started
+
+- name: Remove tmp files
+  file: path=/tmp/elasticsearch-{{ elasticsearch.version }}.deb state=absent
+  when: not is_installed

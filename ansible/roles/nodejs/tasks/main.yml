@@ -1,0 +1,19 @@
+---
+
+- name: check if ppa exists
+  shell: grep nodesource /etc/apt/sources.list /etc/apt/sources.list.d/*
+  register: nodesource_ppa
+  ignore_errors: true
+  changed_when: False
+
+- name: Add ppa Repository
+  command: bash -lc "curl -sL https://deb.nodesource.com/setup{{ nodejs.version }} |  bash -"
+  when: nodesource_ppa|failed
+
+- name: Install nodejs
+  apt: pkg=nodejs state=present
+
+- name: Install NPM Packages
+  npm: name={{ item }} global=yes
+  with_items: nodejs.packages
+  when: nodesource_ppa|failed

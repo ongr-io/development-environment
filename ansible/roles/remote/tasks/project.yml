@@ -1,0 +1,21 @@
+---
+- name: ensure github.com is a known host
+  lineinfile:
+    dest: /root/.ssh/known_hosts
+    create: yes
+    state: present
+    line: "{{ lookup('pipe', 'ssh-keyscan -t rsa github.com') }}"
+    regexp: "^github\\.com"
+
+- name: Fetch the code
+  git: repo={{ remote.repo_url }} dest={{ base.projectdir }}
+  register: code_fetch
+
+- name: Set ownership and permissions
+  file:
+    path: "{{ base.projectdir }}"
+    recurse: yes
+    owner: "{{ remote.user }}"
+    group: "{{ remote.group }}"
+    mode: g+swx
+  when: code_fetch|changed

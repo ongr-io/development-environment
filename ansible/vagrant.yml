@@ -1,0 +1,16 @@
+---
+- hosts: vagrant
+  sudo: true
+  vars_files:
+    - vars/vagrant.yml
+  roles:
+    - base
+    - vagrant
+    - nginx
+    - mariadb
+    - elasticsearch
+    - php
+    - xdebug
+    - composer
+    - nodejs
+    #- { role: ongr-demo, sudo: false }

@@ -1,0 +1,31 @@
+---
+- name: Update apt
+  apt: update_cache=yes cache_valid_time=86400
+
+- name: Configure the timezone
+  template: src=timezone.tpl dest=/etc/timezone
+
+- name: More Configure the timezone
+  file: src=/usr/share/zoneinfo/{{base.timezone}} dest=/etc/localtime state=link force=yes backup=yes
+
+- name: Check locale
+  shell: locale -a | grep -i {{base.locale}}
+  ignore_errors: yes
+  changed_when: False
+  register: locale
+
+- name: Set default system language pack
+  shell: locale-gen {{base.locale}}
+  when: locale|failed
+
+- name: Install System Packages
+  apt: pkg={{ item }} state=present
+  with_items:
+    - curl
+    - wget
+    - python-software-properties
+
+- name: Install Extra Packages
+  apt: pkg={{ item }} state=present
+  with_items: base.packages
+  when: base.packages is defined

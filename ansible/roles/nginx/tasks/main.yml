@@ -1,0 +1,19 @@
+---
+- name: Install Nginx
+  apt: pkg=nginx state=present
+
+- name: Change default nginx config
+  template: src=nginx.tpl dest=/etc/nginx/nginx.conf
+  notify: restart nginx
+
+- name: Change default nginx site
+  copy: src=default dest=/etc/nginx/sites-available/default
+  notify: restart nginx
+
+- name: Add nginx vhost
+  template: src=ongr.tpl dest="/etc/nginx/sites-available/{{ nginx.servername }}"
+  notify: restart nginx
+
+- name: Create vhost symlink
+  file: src="/etc/nginx/sites-available/{{ nginx.servername }}" dest="/etc/nginx/sites-enabled/{{ nginx.servername }}" state=link
+  notify: restart nginx

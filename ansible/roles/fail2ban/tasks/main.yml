@@ -1,0 +1,8 @@
+---
+- name: Install fail2ban
+  apt: pkg=fail2ban state=installed update-cache=yes
+
+- name: Change config
+  template: src=jail.conf.tpl dest=/etc/fail2ban/jail.conf
+  notify:
+    - restart fail2ban

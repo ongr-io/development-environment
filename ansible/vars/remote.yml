@@ -1,0 +1,82 @@
+---
+base:
+    packages: [git, vim, iotop, fail2ban, build-essential, libssl-dev]
+    projectdir: /srv/www/ongr_sandbox
+    timezone: UTC
+    locale: en_US.utf8
+remote:
+    hostname: demo.ongr.rocks
+    repo_url: git://github.com/ongr-io/Demo.git
+    user: dev
+    group: web
+nginx:
+    docroot: /srv/www/ongr_sandbox/web
+    servername: demo.ongr.rocks
+    worker_processes: 2
+    worker_connections: 1024
+    client_body_buffer_size: 8k
+    client_max_body_size: 5m
+nodejs:
+    version: _5.x
+    packages: [bower, gulp]
+mariadb:
+    root_password: root
+    database: ongr
+    user: ongr
+    password: ongr
+elasticsearch:
+    version: 1.5.2
+    listen_addr: 0.0.0.0
+    port: 9200
+    cluster_name: ongr-demo
+    node_name: ongr-demo-node
+    shards: 2
+    replicas: 0
+    datapath: /var/lib/elasticsearch/data
+    pluginpath: /usr/share/elasticsearch/bin/plugin
+    configpath: /etc/elasticsearch/elasticsearch.yml
+    plugins: [mobz/elasticsearch-head, elasticsearch/marvel/latest]
+php:
+    ppa: php5-5.6
+    packages: [php5-cli, php5-intl, php5-mcrypt, php5-curl, php5-gd, php5-common, php5-xdebug, php5-mysql]
+    peclpackages: [ZendOpcache]
+    config:
+        fpm:
+          pid: /var/run/php5-fpm.pid
+          error_log: /var/log/php-fpm.log
+          syslog_facility: daemon
+          syslog_ident: php-fpm
+          log_level: notice
+          emergency_restart_threshold: 10
+          emergency_restart_interval: 60
+          process_control_timeout: 10
+          process_max: 0
+          daemonize: yes
+        pool:
+          user: dev
+          group: web
+          listen: /var/run/php5-fpm.sock
+          listen_owner: www-data
+          listen_group: www-data
+          listen_mode: "0660"
+          pm: static
+          pm_max_children: 6
+          pm_start_servers: 4
+          pm_min_spare_servers: 2
+          pm_max_spare_servers: 6
+          pm_process_idle_timeout: 10s
+          pm_max_requests: 200
+        ini:
+          opcache:
+            enable: 1
+            memory_consumption: 512
+            interned_strings_buffer: 16
+            max_accelerated_files: 9600
+            validate_timestamps: 1
+            revalidate_freq: 0
+            fast_shutdown: 1
+fail2ban:
+    ignoreip: 127.0.0.1/8
+    bantime: 10800
+    findtime: 600
+    maxretry: 3

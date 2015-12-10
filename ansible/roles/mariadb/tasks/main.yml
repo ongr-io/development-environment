@@ -1,0 +1,30 @@
+---
+- name: Add MariaDB-Repository
+  apt_repository: repo='deb http://mirror3.layerjet.com/mariadb/repo/10.1/ubuntu {{ ansible_distribution_release }} main' state=present update_cache=yes
+
+- name: Add Key for MariaDB Repository
+  apt_key: url=http://keyserver.ubuntu.com/pks/lookup?op=get&search=0xcbcb082a1bb943db
+
+- name: Install MariaDB Packages
+  apt: pkg={{ item }} state=present
+  with_items:
+    - mariadb-server
+    - python-mysqldb
+
+- name: Update root password for all root accounts
+  mysql_user: name=root host={{ item }} check_implicit_admin=yes password={{ mariadb.root_password }} login_user=root login_password={{ mariadb.root_password }}
+  with_items:
+    - 127.0.0.1
+    - ::1
+    - localhost
+
+- name: Create databases
+  mysql_db: name={{ mariadb.database }} state=present login_user=root login_password={{ mariadb.root_password }}
+
+- name: Ensure anonymous users are not in the database
+  mysql_user: name='' host={{ item }} state=absent login_user=root login_password={{ mariadb.root_password }}
+  with_items:
+    - localhost
+
+- name: Create db users
+  mysql_user: name={{ mariadb.user }} password={{ mariadb.password }} priv={{ mariadb.database }}.*:ALL state=present login_user=root login_password={{ mariadb.root_password }}
