@@ -9,6 +9,7 @@ vagrant_local:
 nginx:
     docroot: /var/www/public/web
     servername: ongr.dev
+    fastcgi_index: app_dev.php
     worker_processes: 2
     worker_connections: 1024
     client_body_buffer_size: 8k

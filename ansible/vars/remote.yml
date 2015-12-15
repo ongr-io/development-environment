@@ -12,6 +12,7 @@ remote:
 nginx:
     docroot: /srv/www/ongr_sandbox/web
     servername: demo.ongr.rocks
+    fastcgi_index: app.php
     worker_processes: 2
     worker_connections: 1024
     client_body_buffer_size: 8k
