@@ -56,7 +56,6 @@ Vagrant.configure("2") do |config|
             ansible.inventory_path = "ansible/inventories/ongr"
             ansible.limit = 'all'
   #          ansible.verbose = "vvv"
-
         end
     else
         config.vm.synced_folder "./", "/var/www/"
