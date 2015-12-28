@@ -6,9 +6,20 @@
   template: src=nginx.tpl dest=/etc/nginx/nginx.conf
   notify: restart nginx
 
+- name: Remove default nginx vhost (if configured)
+  file: path=/etc/nginx/sites-enabled/default state=absent
+  when: nginx.remove_default
+  notify: restart nginx
+
 - name: Change default nginx site
   copy: src=default dest=/etc/nginx/sites-available/default
   notify: restart nginx
+  when: nginx.remove_default == false
+
+- name: Enable default nginx site
+  file: path=/etc/nginx/sites-enabled/default src=/etc/nginx/sites-available/default state=link
+  notify: restart nginx
+  when: nginx.remove_default == false
 
 - name: Add nginx vhost
   template: src=ongr.tpl dest="/etc/nginx/sites-available/{{ nginx.servername }}"

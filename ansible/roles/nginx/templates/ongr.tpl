@@ -4,7 +4,7 @@ server {
 
   root {{ nginx.docroot }};
 
-  index  app_dev.php app.php;
+  index  {{ nginx.index }};
 
   access_log            /var/log/nginx/{{ nginx.servername }}.access.log combined;
   error_log             /var/log/nginx/{{ nginx.servername }}.error.log;
@@ -17,8 +17,8 @@ server {
 
   location ~ \.php$ {
     root {{ nginx.docroot }};
-    index     app_dev.php app.php;
-    fastcgi_index {{ nginx.fastcgi_index }};
+    index     {{ nginx.index }};
+    fastcgi_index {{ nginx.index }};
     fastcgi_param PATH_INFO $fastcgi_path_info;
     fastcgi_param  PATH_TRANSLATED $document_root$fastcgi_path_info;
     fastcgi_param   SCRIPT_FILENAME $document_root$fastcgi_script_name;
@@ -27,6 +27,5 @@ server {
     include fastcgi_params;
     server_tokens off;
   }
-  try_files $uri $uri/ /app_dev.php?$args /app.php?$args;
-
+  try_files $uri $uri/ /{{ nginx.index }}?$args;
 }

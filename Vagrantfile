@@ -1,7 +1,7 @@
 Vagrant.require_version ">= 1.5"
 
 #install required vagrant plugin(s)
-required_plugins = %w(vagrant-hostsupdater vagrant-vbguest)
+required_plugins = %w(vagrant-hostsupdater vagrant-vbguest vagrant-winnfsd)
 
 plugins_to_install = required_plugins.select { |plugin| not Vagrant.has_plugin? plugin }
 if not plugins_to_install.empty?
@@ -46,20 +46,18 @@ Vagrant.configure("2") do |config|
     config.vm.network :private_network, ip: "192.168.33.10"
     config.vm.hostname = hostname
     config.ssh.forward_agent = true
+    config.vm.synced_folder "./", "/var/www/", type: "nfs"
 
     # If ansible is in your path it will provision from your HOST machine
     # If ansible is not found in the path it will be instaled in the VM and provisioned from there
     if which('ansible-playbook')
-        config.vm.synced_folder "./", "/var/www/", type: "nfs"
         config.vm.provision "ansible" do |ansible|
             ansible.playbook = "ansible/vagrant.yml"
             ansible.inventory_path = "ansible/inventories/ongr"
             ansible.limit = 'all'
   #          ansible.verbose = "vvv"
-
         end
     else
-        config.vm.synced_folder "./", "/var/www/"
-        config.vm.provision :shell, path: "ansible/windows.sh", args: [hostname]
+        config.vm.provision :shell, path: "ansible/setup.sh", args: [hostname]
     end
 end
