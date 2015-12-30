@@ -10,9 +10,10 @@ remote:
     user: dev
     group: web
 nginx:
+    remove_default: false
     docroot: /srv/www/ongr_sandbox/web
     servername: demo.ongr.rocks
-    fastcgi_index: app.php
+    index: app.php
     worker_processes: 2
     worker_connections: 1024
     client_body_buffer_size: 8k
@@ -26,7 +27,7 @@ mariadb:
     user: ongr
     password: ongr
 elasticsearch:
-    version: 1.5.2
+    version: 1.7.4
     listen_addr: 0.0.0.0
     port: 9200
     cluster_name: ongr-demo

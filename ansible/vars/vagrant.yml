@@ -1,15 +1,16 @@
 ---
 base:
-    packages: [git, vim, iotop, fail2ban, build-essential, libssl-dev]
+    packages: [git, vim, build-essential, libssl-dev]
     projectdir: /var/www/public
     timezone: UTC
     locale: en_US.utf8
 vagrant_local:
     hostname: ongr.dev
 nginx:
+    remove_default: false
     docroot: /var/www/public/web
     servername: ongr.dev
-    fastcgi_index: app_dev.php
+    index: app_dev.php
     worker_processes: 2
     worker_connections: 1024
     client_body_buffer_size: 8k
@@ -23,7 +24,7 @@ mariadb:
     user: ongr
     password: ongr
 elasticsearch:
-    version: 1.5.2
+    version: 1.7.4
     listen_addr: 0.0.0.0
     port: 9200
     cluster_name: ongr-demo
