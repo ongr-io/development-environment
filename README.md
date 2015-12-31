@@ -3,8 +3,6 @@
 This is the repository to play with [ONGR Demo](https://github.com/ongr-io/Demo) or run unit and functional tests for the bundles if you dont have your own environment. 
 
 [![Build Status](http://img.shields.io/travis/ongr-io/testing-vm.svg)](https://travis-ci.org/ongr-io/testing-vm)
-[![GitHub issues](https://img.shields.io/github/issues/ongr-io/testing-vm.svg?style=flat-square)](https://github.com/ongr-io/testing-vm/issues)
-[![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg?style=flat-square)](https://raw.githubusercontent.com/ongr-io/testing-vm/master/LICENSE)
 
 <img src="https://cloud.githubusercontent.com/assets/12516828/11679876/007f6f74-9e5d-11e5-9804-c5ba978c516e.png" width="80" height="80">
 <img src="https://cloud.githubusercontent.com/assets/12516828/11679879/0082c5d4-9e5d-11e5-89fe-33c53506c6c7.jpg" width="80" height="80">
