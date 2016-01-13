@@ -33,7 +33,7 @@
   when: not is_installed
 
 - name: Install plugins
-  command: "{{ elasticsearch.pluginpath }} -install {{ item }}"
+  command: "{{ elasticsearch.pluginpath }} install {{ item }}"
   with_items: elasticsearch.plugins
   register: plugins_installed
   changed_when: "'Installed' in plugins_installed.stdout"
