@@ -33,6 +33,7 @@
   when: not is_installed
 
 - name: Install plugins
+  become_user: elasticsearch
   command: "{{ elasticsearch.pluginpath }} install {{ item }}"
   with_items: elasticsearch.plugins
   register: plugins_installed
