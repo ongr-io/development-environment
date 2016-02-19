@@ -40,8 +40,7 @@ elasticsearch:
     plugins: [mobz/elasticsearch-head, elasticsearch/marvel/latest]
 php:
     ppa: php5-5.6
-    packages: [php5-cli, php5-intl, php5-mcrypt, php5-curl, php5-gd, php5-common, php5-xdebug, php5-mysql]
-    peclpackages: [ZendOpcache]
+    packages: [php5-cli, php5-intl, php5-mcrypt, php5-curl, php5-gd, php5-common, php5-mysql]
     config:
         fpm:
           pid: /var/run/php5-fpm.pid

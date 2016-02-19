@@ -27,5 +27,5 @@
 
 - name: Install Extra Packages
   apt: pkg={{ item }} state=present
-  with_items: base.packages
+  with_items: "{{ base.packages }}"
   when: base.packages is defined

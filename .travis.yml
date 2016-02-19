@@ -13,6 +13,7 @@ before_install:
 install:
   # Install Ansible.
   - pip install ansible
+  - ansible --version
 
 script:
   # Check the role/playbook's syntax.
@@ -28,6 +29,6 @@ script:
     && (echo 'Idempotence test: pass' && exit 0)
     || (echo 'Idempotence test: fail' && exit 1)
 
-  # Test elasticsearch and nginx
+  # Test elasticsearch and http.
   - curl localhost:9200
   - curl localhost:80
