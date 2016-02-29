@@ -1,6 +1,6 @@
 ---
 - hosts: vagrant
-  sudo: true
+  sudo: yes
   vars_files:
     - vars/vagrant.yml
   roles:
@@ -13,4 +13,3 @@
     - xdebug
     - composer
     - nodejs
-    #- { role: ongr-demo, sudo: false }

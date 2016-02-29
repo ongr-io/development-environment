@@ -1,6 +1,6 @@
 # ONGR testing VM
 
-This is the repository to play with [ONGR Demo](https://github.com/ongr-io/Demo) or run unit and functional tests for the bundles if you dont have your own environment. 
+This is the repository to play with [ONGR Demo](https://github.com/ongr-io/Demo) or run unit and functional tests for the bundles if you don't have your own environment.
 
 [![Build Status](http://img.shields.io/travis/ongr-io/testing-vm.svg)](https://travis-ci.org/ongr-io/testing-vm)
 
@@ -17,7 +17,7 @@ This is the repository to play with [ONGR Demo](https://github.com/ongr-io/Demo)
   * [Virtualbox](https://www.virtualbox.org/wiki/Downloads)
   * [Vagrant](https://www.vagrantup.com/downloads.html)
 
-> Recommendation: Install `Virtualbox` before Vagrant.
+> Recommendation: install `Virtualbox` before `Vagrant`.
 
 ## Install instructions
 
@@ -27,18 +27,16 @@ Clone this repository:
 git clone https://github.com/ongr-io/testing-vm.git
 ```
 
-Go in to the folder:
+Go into the folder:
 
 ```bash
 cd testing-vm
 ```
 
-Run `vagrant up` to start and provision the machine.
-
-That's it. 
+Run `vagrant up` to start and provision the machine. That's it.
 
 ## Customization
-The VM should hold all of the components needed to test ONGR bundles. To customize various settings, such as nginx, php, mariadb, ES configuration, edit the following ansible vars `ansible/vars/vagrant.yml`. For remote provision, it's `ansible/vars/remote.yml`.
+The VM should hold all of the components needed to test ONGR bundles. To customize various settings, such as nginx, php, mariadb, ES configuration, edit the following ansible vars: `ansible/vars/vagrant.yml`. For remote provision, it's `ansible/vars/remote.yml`.
 
 ## Remote provision
 

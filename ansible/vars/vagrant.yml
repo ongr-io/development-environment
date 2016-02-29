@@ -38,7 +38,6 @@ elasticsearch:
 php:
     ppa: php5-5.6
     packages: [php5-cli, php5-intl, php5-mcrypt, php5-curl, php5-gd, php5-common, php5-xdebug, php5-mysql]
-    peclpackages: [ZendOpcache]
     config:
         fpm:
           pid: /var/run/php5-fpm.pid
@@ -74,3 +73,8 @@ php:
             validate_timestamps: 1
             revalidate_freq: 0
             fast_shutdown: 1
+        xdebug:
+          remote_port: 9000
+          remote_host: 192.168.33.1
+          max_nesting_level: 250
+          timezone: Europe/Vilnius

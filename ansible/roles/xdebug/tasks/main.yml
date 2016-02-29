@@ -2,15 +2,18 @@
 - name: Install xDebug
   apt: pkg=php5-xdebug state=present
 
-- name: Check xdebug on cli
-  shell: php -i | grep xdebug
-  ignore_errors: true
-  register: xdebug_status
-  changed_when: false
+- name: Configure xdebug
+  template: src=custom_xdebug.tpl dest=/etc/php5/mods-available/custom_xdebug.ini
+  notify: restart php5-fpm
+  register: xdebug_conf
 
-- name: Disable xdebug in php-cli
-  shell: php5dismod -s cli xdebug
-  when: xdebug_status|success
+- name: Symlink xdebug.ini
+  file: src="/etc/php5/mods-available/custom_xdebug.ini" dest="/etc/php5/{{ item }}/conf.d/30-custom_xdebug.ini" state=link
+  notify: restart php5-fpm
+  when: xdebug_conf.changed
+  with_items:
+    - fpm
+    - cli
 
 - name: Check xdebug binary
   shell: ls /usr/local/bin/debug

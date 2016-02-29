@@ -35,7 +35,7 @@
 - name: Install plugins
   become_user: elasticsearch
   command: "{{ elasticsearch.pluginpath }} install {{ item }}"
-  with_items: elasticsearch.plugins
+  with_items: "{{ elasticsearch.plugins }}"
   register: plugins_installed
   changed_when: "'Installed' in plugins_installed.stdout"
   failed_when: "plugins_installed.rc != 0 and plugins_installed.stdout.find('already exists. To update the plugin') == -1"

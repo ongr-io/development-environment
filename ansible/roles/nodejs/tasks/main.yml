@@ -15,5 +15,5 @@
 
 - name: Install NPM Packages
   npm: name={{ item }} global=yes
-  with_items: nodejs.packages
+  with_items: "{{ nodejs.packages }}"
   when: nodesource_ppa|failed
