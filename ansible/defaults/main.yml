@@ -1,50 +1,52 @@
 ---
 base:
-    packages: [git, vim, iotop, fail2ban, build-essential, libssl-dev]
-    projectdir: /srv/www/ongr_sandbox
+    packages: [git, vim, iotop, fail2ban, build-essential, libssl-dev, python-software-properties]
+    projectdir: /srv/www/ongr
     timezone: UTC
     locale: en_US.utf8
 remote:
-    hostname: demo.ongr.rocks
-    repo_url: git://github.com/ongr-io/Demo.git
-    user: dev
+    hostname: demo.ongr
+    fqdn: demo.ongr.rocks
+    extra_hosts: []
+    user: nfq
     group: web
 nginx:
     remove_default: false
-    docroot: /srv/www/ongr_sandbox/web
+    docroot: /srv/www/ongr/current/web
     servername: demo.ongr.rocks
     index: app.php
-    worker_processes: 2
+    worker_processes: 1
     worker_connections: 1024
     client_body_buffer_size: 8k
-    client_max_body_size: 5m
+    client_max_body_size: 15m
 nodejs:
     version: _5.x
     packages: [bower, gulp]
 mariadb:
+    version: 10.1
     root_password: root
     database: ongr
     user: ongr
     password: ongr
 elasticsearch:
-    version: 1.7.4
-    listen_addr: 0.0.0.0
+    url: https://download.elastic.co/elasticsearch/elasticsearch/elasticsearch
+    version: 2.2.0
+    listen_addr: 127.0.0.1
     port: 9200
-    cluster_name: ongr-demo
-    node_name: ongr-demo-node
-    shards: 2
+    cluster_name: ongr-cluster
+    node_name: ongr-node
+    shards: 1
     replicas: 0
     datapath: /var/lib/elasticsearch/data
     pluginpath: /usr/share/elasticsearch/bin/plugin
     configpath: /etc/elasticsearch/elasticsearch.yml
-    plugins: [mobz/elasticsearch-head, elasticsearch/marvel/latest]
+    plugins: [mobz/elasticsearch-head]
 php:
-    ppa: php5-5.6
-    packages: [php5-cli, php5-intl, php5-mcrypt, php5-curl, php5-gd, php5-common, php5-mysql]
+    ppa: ondrej/php
+    version: 5.6
+    packages: [fpm, cli, intl, mcrypt, curl, gd, common, mysql]
     config:
         fpm:
-          pid: /var/run/php5-fpm.pid
-          error_log: /var/log/php-fpm.log
           syslog_facility: daemon
           syslog_ident: php-fpm
           log_level: notice
@@ -54,24 +56,24 @@ php:
           process_max: 0
           daemonize: yes
         pool:
-          user: dev
+          user: nfq
           group: web
-          listen: /var/run/php5-fpm.sock
           listen_owner: www-data
           listen_group: www-data
           listen_mode: "0660"
           pm: static
-          pm_max_children: 6
-          pm_start_servers: 4
-          pm_min_spare_servers: 2
-          pm_max_spare_servers: 6
+          pm_max_children: 10
+          pm_start_servers: 1
+          pm_min_spare_servers: 1
+          pm_max_spare_servers: 4
           pm_process_idle_timeout: 10s
           pm_max_requests: 200
         ini:
           opcache:
             enable: 1
-            memory_consumption: 512
-            interned_strings_buffer: 16
+            enable_cli: false
+            memory_consumption: 256
+            interned_strings_buffer: 8
             max_accelerated_files: 9600
             validate_timestamps: 1
             revalidate_freq: 0

@@ -36,21 +36,21 @@ cd testing-vm
 Run `vagrant up` to start and provision the machine. That's it.
 
 ## Customization
-The VM should hold all of the components needed to test ONGR bundles. To customize various settings, such as nginx, php, mariadb, ES configuration, edit the following ansible vars: `ansible/vars/vagrant.yml`. For remote provision, it's `ansible/vars/remote.yml`.
+The VM should hold all of the components needed to test ONGR bundles. To customize various settings, such as nginx, php, mariadb, ES configuration, edit the following ansible vars: `ansible/vars/vagrant.yml`.
 
 ## Remote provision
 
-The `ansible/remote.yml` playbook can be used to provision a remote ubuntu host that you have root access to. This has to be ran from a machine that has ansible installed (no Windows support).
+The `remote.yml` playbook can be used to provision a remote ubuntu host that you have root access to. This has to be run from a machine that has ansible installed (no Windows support).
 
-Firstly, edit your ansible inventory and add the IP address of your remote host(s). This can be done within global ansible [inventory](http://docs.ansible.com/ansible/intro_inventory.html) or in your project: `ansible/iventories/ongr`. The default settings for the remote run are defined in your project's `ansible.cfg`, so make sure to run the remote playbook inside the project folder:
+Firstly, edit your ansible inventory and add the IP address of your remote host(s). This can be done within global ansible [inventory](http://docs.ansible.com/ansible/intro_inventory.html) or in your project root `inventory`. The default ansible settings for the remote run are defined in your project's `ansible.cfg`, so make sure to run the remote playbook inside the project folder, e.g.:
 
 ```
-ansible-playbook ansible/remote.yml
+ansible-playbook remote.yml -u ubuntu
 ```
 
 ## What's inside
 
-* LEMP stack: nginx, php5-fpm and mariaDB
+* LEMP stack: nginx, php-fpm and mariaDB
 * git
 * vim
 * java JDK

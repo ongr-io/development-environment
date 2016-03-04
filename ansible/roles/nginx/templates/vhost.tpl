@@ -16,13 +16,13 @@ server {
   }
 
   location ~ \.php$ {
-    root {{ nginx.docroot }};
-    index     {{ nginx.index }};
+    root  {{ nginx.docroot }};
+    index {{ nginx.index }};
     fastcgi_index {{ nginx.index }};
     fastcgi_param PATH_INFO $fastcgi_path_info;
-    fastcgi_param  PATH_TRANSLATED $document_root$fastcgi_path_info;
-    fastcgi_param   SCRIPT_FILENAME $document_root$fastcgi_script_name;
-    fastcgi_pass unix:/var/run/php5-fpm.sock;
+    fastcgi_param PATH_TRANSLATED $document_root$fastcgi_path_info;
+    fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
+    fastcgi_pass  unix:{{ php_socket }};
     fastcgi_split_path_info ^(.+\.php)(/.+)$;
     include fastcgi_params;
     server_tokens off;
