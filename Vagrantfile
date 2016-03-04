@@ -1,8 +1,11 @@
 Vagrant.require_version ">= 1.5"
 
-#install required vagrant plugin(s)
-#required_plugins = %w(vagrant-hostsupdater vagrant-vbguest vagrant-winnfsd)
-required_plugins = %w(vagrant-hostsupdater vagrant-bindfs)
+# Install required vagrant plugin(s)
+if Vagrant::Util::Platform.windows?
+    required_plugins = %w(vagrant-hostsupdater vagrant-bindfs vagrant-winnfsd)
+else
+    required_plugins = %w(vagrant-hostsupdater vagrant-bindfs)
+end
 
 plugins_to_install = required_plugins.select { |plugin| not Vagrant.has_plugin? plugin }
 if not plugins_to_install.empty?
@@ -14,7 +17,7 @@ if not plugins_to_install.empty?
   end
 end
 
-# Check to determine whether we're on a windows or linux/os-x host
+# Check for which cmd
 def which(cmd)
     exts = ENV['PATHEXT'] ? ENV['PATHEXT'].split(';') : ['']
     ENV['PATH'].split(File::PATH_SEPARATOR).each do |path|
@@ -26,44 +29,37 @@ def which(cmd)
     return nil
 end
 
+# Define vm hostname
 hostname = "ongr.dev"
 
 Vagrant.configure("2") do |config|
 
-    config.vm.provider :virtualbox do |v|
-        v.name = hostname
-        v.customize ["setextradata", :id, "VBoxInternal2/SharedFoldersEnableSymlinksCreate/v-root", "1"]
-        v.customize [
-            "modifyvm", :id,
-            "--name", "ongr.dev",
-            "--memory", 2048,
-            "--natdnshostresolver1", "on",
-            "--cpus", 2,
-        ]
-    end
-
+    #VM setup
     config.vm.box = "ubuntu/trusty64"
-
     config.vm.network :private_network, ip: "192.168.33.10"
     config.vm.hostname = hostname
     config.ssh.forward_agent = true
+    config.vm.provider :virtualbox do |v|
+        v.name = hostname
+        v.customize ["setextradata", :id, "VBoxInternal2/SharedFoldersEnableSymlinksCreate/v-root", "1"]
+        v.customize [ "modifyvm", :id, "--name", "ongr.dev", "--memory", 2048, "--natdnshostresolver1", "on", "--cpus", 2]
+    end
 
-    # Map NFS uid/gid to current user.
+    # Sync folder setup
     config.nfs.map_uid = Process.uid
     config.nfs.map_gid = Process.gid
-
-    config.vm.synced_folder "./", "/var/www", :nfs => true
-    config.bindfs.bind_folder "/var/www", "/var/www",
+    config.vm.synced_folder "./", "/srv/www", :nfs => true
+    config.bindfs.bind_folder "/srv/www", "/srv/www",
       group: "www-data",
       perms: "u=rwX:g=rwX:o=rD",
       create_as_user: true
 
-    # If ansible is in your path it will provision from your HOST machine
+    # If ansible is in your path it will provision from your host
     # If ansible is not found in the path it will be instaled in the VM and provisioned from there
     if which('ansible-playbook')
         config.vm.provision "ansible" do |ansible|
-            ansible.playbook = "ansible/vagrant.yml"
-            ansible.inventory_path = "ansible/inventories/ongr"
+            ansible.playbook = "vagrant.yml"
+            ansible.inventory_path = "inventory"
             ansible.limit = 'all'
             #ansible.verbose = "vvv"
         end

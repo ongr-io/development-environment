@@ -14,7 +14,7 @@
   user: name=vagrant groups=www-data append=yes
 
 - name: Change vagrant pwd
-  lineinfile: dest=/home/vagrant/.bashrc line="cd /var/www/public"
+  lineinfile: dest=/home/vagrant/.bashrc line="cd {{ base.projectdir }}"
 
 - name: Add vagrant umask
   lineinfile: dest=/home/vagrant/.bashrc line="umask 0002"

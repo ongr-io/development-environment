@@ -2,7 +2,7 @@
 - hosts: remote
   sudo: yes
   vars_files:
-    - vars/remote.yml
+    - ansible/defaults/main.yml
   roles:
     - base
     - nginx
@@ -13,4 +13,3 @@
     - nodejs
     - remote
     - fail2ban
-  #  - { role: ongr-demo, become: yes, become_user: "{{ remote.user }}" }
