@@ -1,14 +1,14 @@
 ---
 - name: Set the hostname in /etc/hostname
-  lineinfile: dest=/etc/hostname line="{{ remote.hostname }}"
+  lineinfile: dest=/etc/hostname line="{{ remote.hostname }}" regexp=".*"
   register: added_hostname
 
 - name: Set the hostname
   shell: hostname {{ remote.hostname }}
-  when: added_hostname == True
+  when: added_hostname.changed
 
 - name: Update /etc/hosts
-  lineinfile: dest=/etc/hosts regexp='^127\.0\.0\.1' line='127.0.0.1 localhost {{ remote.hostname }}' owner=root group=root mode=0644
+  template: src=hosts.tpl dest=/etc/hosts
 
 - name: Add default index
   copy: src=index.html dest=/usr/share/nginx/html/
@@ -23,6 +23,24 @@
   user: name={{ remote.user }} comment="Development user" group={{ remote.group }}
 
 - name: Add dev user umask
-  lineinfile: dest=/home/{{ remote.user }}/.bashrc line="umask 0002"
+  lineinfile: dest="/home/{{ remote.user }}/.bashrc" line="umask 0002"
 
-- include: project.yml
+- name: Create shared directory
+  file:
+    path: "{{ base.projectdir }}/shared/{{ item }}"
+    state: directory
+    recurse: yes
+  with_items:
+    - app/config
+    - var/logs
+
+- name: Add parameters.yml
+  copy: src=parameters.yml dest="{{ base.projectdir }}/shared/app/config/parameters.yml"
+
+- name: Set ownership and permissions
+  file:
+    path: "{{ base.projectdir }}"
+    recurse: yes
+    owner: "{{ remote.user }}"
+    group: "{{ remote.group }}"
+    mode: g+swx

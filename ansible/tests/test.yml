@@ -2,6 +2,7 @@
 - hosts: localhost
   remote_user: root
   vars_files:
+      - ../defaults/main.yml
       - ../vars/vagrant.yml
   roles:
     - base

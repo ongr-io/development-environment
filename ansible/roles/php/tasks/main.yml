@@ -1,44 +1,46 @@
 ---
+- set_fact: php_path="/etc/php/7.0" php_mod_prefix="php7.0-" php_run="/var/run/php/php7.0-fpm"
+  when: php.version == 7.0
+
+- set_fact: php_path="/etc/php5" php_mod_prefix="php5-" php_run="/var/run/php5-fpm"
+  when: php.version != 7.0
+
 - name: Add ppa Repository
-  apt_repository: repo=ppa:ondrej/{{ php.ppa }}
+  apt_repository: repo=ppa:{{ php.ppa }}
 
 - name: Update apt
   apt: update_cache=yes cache_valid_time=86400
 
-- name: Install php5-fpm
-  apt: pkg=php5-fpm state=present
-
 - name: Install PHP Packages
-  apt: pkg={{ item }} state=present
-  with_items: "{{ php.packages }}"
+  apt: pkg="{{ php_mod_prefix }}{{ php.packages|join(',' + php_mod_prefix) }}"
   when: php.packages is defined
 
+- name: Install php-xml
+  apt: pkg=php-xml
+
 - name: Ensure timezone is set in cli php.ini
-  lineinfile: dest=/etc/php5/cli/php.ini
+  lineinfile: dest="{{ php_path }}/cli/php.ini"
               regexp='date.timezone ='
               line='date.timezone = {{ base.timezone }}'
 
 - name: Enabling opcache cli
-  lineinfile: dest=/etc/php5/cli/php.ini
+  lineinfile: dest="{{ php_path }}/cli/php.ini"
               regexp=';?opcache.enable_cli=\d'
               line='opcache.enable_cli=1'
+  when: php.config.ini.opcache.enable_cli == true
 
-- name: Configure php5-fpm
-  template: src=php-fpm.tpl dest=/etc/php5/fpm/php-fpm.conf
-  notify: restart php5-fpm
+- name: Configure fpm
+  template: src=php-fpm.tpl dest="{{ php_path }}/fpm/php-fpm.conf"
+  notify: restart fpm
 
 - name: Configure fpm pool
-  template: src=pool.tpl dest=/etc/php5/fpm/pool.d/www.conf
-  notify: restart php5-fpm
+  template: src=pool.tpl dest="{{ php_path }}/fpm/pool.d/www.conf"
+  notify: restart fpm
 
 - name: Add php-fpm umask
-  lineinfile: dest=/etc/init/php5-fpm.conf line="umask 0002"
-  notify: restart php5-fpm
+  lineinfile: dest="/etc/init/php{{ php.version }}-fpm.conf" line="umask 0002" create=yes
+  notify: restart fpm
 
 - name: Configure php.ini
-  template: src=php.ini.tpl dest=/etc/php5/fpm/php.ini
-  notify: restart php5-fpm
-
-- name: Install PECL packages
-  include: pecl.yml
-  when: php.pecl_packages is defined
+  template: src=php.ini.tpl dest="{{ php_path }}/fpm/php.ini"
+  notify: restart fpm

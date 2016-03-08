@@ -52,8 +52,8 @@ Vagrant.configure("2") do |config|
     config.nfs.map_uid = Process.uid
     config.nfs.map_gid = Process.gid
 
-    config.vm.synced_folder "./", "/var/www", :nfs => true
-    config.bindfs.bind_folder "/var/www", "/var/www",
+    config.vm.synced_folder "./", "/srv/www", :nfs => true
+    config.bindfs.bind_folder "/srv/www", "/srv/www",
       group: "www-data",
       perms: "u=rwX:g=rwX:o=rD",
       create_as_user: true
@@ -62,8 +62,8 @@ Vagrant.configure("2") do |config|
     # If ansible is not found in the path it will be instaled in the VM and provisioned from there
     if which('ansible-playbook')
         config.vm.provision "ansible" do |ansible|
-            ansible.playbook = "ansible/vagrant.yml"
-            ansible.inventory_path = "ansible/inventories/ongr"
+            ansible.playbook = "vagrant.yml"
+            ansible.inventory_path = "inventory"
             ansible.limit = 'all'
             #ansible.verbose = "vvv"
         end

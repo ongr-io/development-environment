@@ -4,10 +4,6 @@
   changed_when: false
   register: install_status
 
-- name: Set installed variable
-  set_fact: is_installed='{{ install_status.stdout == elasticsearch.version }}'
-  ignore_errors: yes
-
 - name: Add dependencies repository
   apt_repository: repo='ppa:webupd8team/java' state=present update_cache=yes
 
@@ -22,15 +18,19 @@
 - name: Install Dependencies
   apt: pkg=oracle-java8-installer state=present
 
+- name: Remove old version
+  apt: pkg=elasticsearch state=absent purge=yes
+  when: install_status.stdout != elasticsearch.version
+
 - name: Download
   get_url: >
-    url={{ elasticsearch_url }}
+    url="{{ elasticsearch.url }}-{{ elasticsearch.version }}.deb"
     dest=/tmp/elasticsearch-{{ elasticsearch.version }}.deb
-  when: not is_installed
+  when: install_status.stdout != elasticsearch.version
 
 - name: Install
   apt: deb=/tmp/elasticsearch-{{ elasticsearch.version }}.deb
-  when: not is_installed
+  when: install_status.stdout != elasticsearch.version
 
 - name: Install plugins
   become_user: elasticsearch
@@ -49,4 +49,4 @@
 
 - name: Remove tmp files
   file: path=/tmp/elasticsearch-{{ elasticsearch.version }}.deb state=absent
-  when: not is_installed
+  when: install_status.stdout != elasticsearch.version
