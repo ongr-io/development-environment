@@ -1,8 +1,8 @@
 #SETTING CONFIGURATION: pid ###############
-pid = {{ php.config.fpm.pid }}
+pid = {{ php_run }}.pid
 
 #SETTING CONFIGURATION: error_log ###############
-error_log = {{ php.config.fpm.error_log }}
+error_log = /var/log/{{ php.version }}-fpm.log
 
 #SETTING CONFIGURATION: syslog.facility ###############
 syslog.facility = {{ php.config.fpm.syslog_facility }}
@@ -30,4 +30,4 @@ daemonize = {{ php.config.fpm.daemonize }}
 
 
 #POOL DIRECTORY LOCATION
-include=/etc/php5/fpm/pool.d/*.conf
+include={{ php_path }}/fpm/pool.d/*.conf

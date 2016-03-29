@@ -1,6 +1,5 @@
 ---
-
-- name: check if ppa exists
+- name: Check if ppa exists
   shell: grep nodesource /etc/apt/sources.list /etc/apt/sources.list.d/*
   register: nodesource_ppa
   ignore_errors: true

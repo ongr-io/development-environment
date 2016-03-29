@@ -2,7 +2,7 @@
 ###### Base Pool Configuration
 user = {{ php.config.pool.user }}
 group = {{ php.config.pool.group }}
-listen = {{ php.config.pool.listen }}
+listen = {{ php_run }}.sock
 listen.allowed_clients =
 listen.owner = {{ php.config.pool.listen_owner }}
 listen.group = {{ php.config.pool.listen_group }}

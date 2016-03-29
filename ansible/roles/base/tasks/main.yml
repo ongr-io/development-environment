@@ -6,10 +6,10 @@
   template: src=timezone.tpl dest=/etc/timezone
 
 - name: More Configure the timezone
-  file: src=/usr/share/zoneinfo/{{base.timezone}} dest=/etc/localtime state=link force=yes backup=yes
+  file: src="/usr/share/zoneinfo/{{ base.timezone }}" dest=/etc/localtime state=link force=yes backup=yes
 
 - name: Check locale
-  shell: locale -a | grep -i {{base.locale}}
+  shell: locale -a | grep -i {{ base.locale }}
   ignore_errors: yes
   changed_when: False
   register: locale

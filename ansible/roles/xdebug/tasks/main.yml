@@ -1,15 +1,32 @@
 ---
-- name: Install xDebug
-  apt: pkg=php5-xdebug state=present
+- set_fact: php_path="/etc/php/7.0"
+  when: php.version == 7.0
 
-- name: Configure xdebug
-  template: src=custom_xdebug.tpl dest=/etc/php5/mods-available/custom_xdebug.ini
-  notify: restart php5-fpm
+- set_fact: php_path="/etc/php5"
+  when: php.version != 7.0
+
+- name: Install xdebug
+  apt: pkg="php-xdebug" state=present
+  when: php.version == 7.0
+
+- name: Install xdebug
+  apt: pkg="php5-xdebug" state=present
+  when: php.version != 7.0
+
+- name: Edit xdebug.ini
+  lineinfile: dest={{ php_path }}/mods-available/xdebug.ini
+              regexp='extension=xdebug.so'
+              line='zend_extension=xdebug.so'
+  changed_when: false
+
+- name: Configure custom_xdebug
+  template: src=custom_xdebug.tpl dest={{ php_path }}/mods-available/custom_xdebug.ini
+  notify: restart fpm
   register: xdebug_conf
 
-- name: Symlink xdebug.ini
-  file: src="/etc/php5/mods-available/custom_xdebug.ini" dest="/etc/php5/{{ item }}/conf.d/30-custom_xdebug.ini" state=link
-  notify: restart php5-fpm
+- name: Symlink custom_xdebug.ini
+  file: src="{{ php_path }}/mods-available/custom_xdebug.ini" dest="{{ php_path }}/{{ item }}/conf.d/30-custom_xdebug.ini" state=link
+  notify: restart fpm
   when: xdebug_conf.changed
   with_items:
     - fpm

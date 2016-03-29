@@ -1,4 +1,10 @@
 ---
+- set_fact: php_socket="/var/run/php/php7.0-fpm.sock"
+  when: php.version == 7.0
+
+- set_fact: php_socket="/var/run/php5-fpm.sock"
+  when: php.version != 7.0
+
 - name: Install Nginx
   apt: pkg=nginx state=present
 
@@ -22,7 +28,7 @@
   when: nginx.remove_default == false
 
 - name: Add nginx vhost
-  template: src=ongr.tpl dest="/etc/nginx/sites-available/{{ nginx.servername }}"
+  template: src=vhost.tpl dest="/etc/nginx/sites-available/{{ nginx.servername }}"
   notify: restart nginx
 
 - name: Create vhost symlink

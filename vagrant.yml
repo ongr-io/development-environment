@@ -2,7 +2,8 @@
 - hosts: vagrant
   sudo: yes
   vars_files:
-    - vars/vagrant.yml
+    - ansible/defaults/main.yml
+    - ansible/vars/vagrant.yml
   roles:
     - base
     - vagrant
