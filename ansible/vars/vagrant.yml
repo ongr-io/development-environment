@@ -25,7 +25,7 @@ elasticsearch:
     shards: 2
 php:
     version: 7.0
-    packages: [fpm, cli, intl, mcrypt, curl, gd, common, mysql]
+    packages: [fpm, cli, intl, mcrypt, curl, gd, common, mysql, zip]
     config:
         pool:
           user: www-data
