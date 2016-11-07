@@ -2,7 +2,7 @@
 
 sudo apt-get update
 sudo apt-get install -y software-properties-common
-sudo add-apt-repository -y ppa:ansible/ansible
+sudo add-apt-repository -y ppa:ansible/ansible-1.9
 sudo apt-get update
 sudo apt-get install -y ansible
 
