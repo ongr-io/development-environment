@@ -1,6 +1,6 @@
 ---
 - hosts: remote
-  sudo: yes
+  become: true
   vars_files:
     - ansible/defaults/main.yml
   roles:

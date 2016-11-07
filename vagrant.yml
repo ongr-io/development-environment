@@ -1,6 +1,6 @@
 ---
 - hosts: vagrant
-  sudo: yes
+  become: true
   vars_files:
     - ansible/defaults/main.yml
     - ansible/vars/vagrant.yml

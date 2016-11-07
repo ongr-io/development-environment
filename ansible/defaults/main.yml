@@ -23,7 +23,7 @@ nodejs:
     version: _5.x
     packages: [bower, gulp]
 mariadb:
-    version: 10.1
+    repo: http://sfo1.mirrors.digitalocean.com/mariadb/repo/10.1/ubuntu
     root_password: root
     database: ongr
     user: ongr
