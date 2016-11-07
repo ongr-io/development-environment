@@ -8,11 +8,12 @@ env:
 
 before_install:
   # Make sure everything's up to date.
+  - add-apt-repository -y ppa:ansible/ansible-1.9
   - sudo apt-get update -qq
 
 install:
   # Install Ansible.
-  - pip install ansible
+  - apt-get install ansible
   - ansible --version
 
 script:
