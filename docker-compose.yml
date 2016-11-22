@@ -1,31 +1,39 @@
-web:
-  build: ./images/nginx
-  ports:
-    - "8080:80"
-  volumes:
-    - ./src:/var/www
-    - ./conf/vhost.conf:/etc/nginx/sites-enabled/vhost.conf
-  links:
-    - php
-php:
-  build: ./images/php
-  volumes:
-    - ./conf/php-fpm.conf:/etc/php5/fpm/php-fpm.conf
-    - ./src:/var/www
-  links:
-    - db
-    - elasticsearch
-db:
-  image: sameersbn/mysql
-  volumes:
-    - /var/lib/mysql/ongr:/var/lib/mysql/ongr
-  environment:
-    - DB_NAME=ongr
-    - DB_USER=ongruser
-    - DB_PASS=ongrpass
-elasticsearch:
- build: ./images/elasticsearch
- ports:
-    - "9222:9200"
- volumes:
-    - /usr/share/elasticsearch/data:/usr/share/elasticsearch/data
+version: '2'
+services:
+  nginx:
+    image: ongr/nginx
+    links:
+      - fpm
+    ports:
+      - "8000:80"
+    volumes:
+      - "./:/var/www"
+  fpm:
+    image: ongr/php-fpm
+    user: "1000:1000"
+    links:
+      - mariadb
+    volumes:
+      # Uncomment if you want cache composer stuff
+      #- ".docker/.composer:/.composer"
+      - ".docker:/home"
+      - "./:/var/www"
+  npm:
+    image: ongr/nodejs:6.4.0.1
+    user: "1000:1000"
+    volumes:
+      - ".docker/.npm:/home/.npm"
+      - "./:/home/app"
+      - "/usr/local/lib/node_modules"
+  mariadb-data:
+    image: tianon/true
+    volumes:
+      - /var/lib/mysql
+  mariadb:
+    image: mariadb:10.1.10
+    ports:
+      - "3300:3306"
+    volumes_from:
+      - "mariadb-data"
+    environment:
+        MYSQL_ROOT_PASSWORD: root
