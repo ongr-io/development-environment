@@ -19,7 +19,7 @@ services:
       - ".docker:/home"
       - "./:/var/www"
   npm:
-    image: ongr/nodejs:6.4.0.1
+    image: ongr/nodejs:6.4.0
     user: "1000:1000"
     volumes:
       - ".docker/.npm:/home/.npm"
