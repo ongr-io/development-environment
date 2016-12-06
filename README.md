@@ -61,7 +61,7 @@ docker-compose up -d
 To pass any command run in the container execute it with `docker-compose exec`:
 
 ```
-docker-compose exec php-fpm composer install
+docker-compose exec fpm composer install
 ```
 
 > There is `docker-compose run` command, the difference is that this command
@@ -72,7 +72,7 @@ docker-compose exec php-fpm composer install
 Yes. Simply run:
 
 ```
-docker-compose exec php-fpm bash
+docker-compose exec fpm bash
 ```
 
 And you will land in the specific container bash with root permissions. 
