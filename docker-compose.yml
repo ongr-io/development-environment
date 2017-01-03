@@ -1,5 +1,13 @@
 version: '2'
 services:
+  elasticsearch:
+    image: elasticsearch:2
+    volumes_from:
+      - "elasticsearch-data"
+  elasticsearch-data:
+    image: tianon/true
+    volumes:
+      - /usr/share/elasticsearch/data
   nginx:
     image: ongr/nginx
     links:
@@ -13,6 +21,7 @@ services:
     user: "1000:1000"
     links:
       - mariadb
+      - elasticsearch
     volumes:
       # Uncomment if you want cache composer stuff
       #- ".docker/.composer:/.composer"
