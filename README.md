@@ -17,7 +17,7 @@ After up and running you will get:
 - PHP FPM 7.0
 - Maria DB 10.1
 - Ngnix
-- Elasticsearch 5.0
+- Elasticsearch 2.4
 - You name it..
 
 > That said, you can add any container to the `docker-compose.yml` you want.
