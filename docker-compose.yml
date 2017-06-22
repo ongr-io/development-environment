@@ -1,48 +1,71 @@
-version: '2'
+version: "2"
 services:
-  elasticsearch:
-    image: elasticsearch:2
-    volumes_from:
-      - "elasticsearch-data"
-  elasticsearch-data:
-    image: tianon/true
-    volumes:
-      - /usr/share/elasticsearch/data
   nginx:
     image: ongr/nginx
     links:
       - fpm
     ports:
-      - "8000:80"
+      - "$LOCAL_NGINX_PORT:80"
     volumes:
-      - "./:/var/www"
+      - .docker/config/nginx/default.conf:/etc/nginx/conf.d/default.conf
+      - app-sync:/var/www:nocopy
+    networks:
+      - frontend
   fpm:
-    image: ongr/php-fpm
-    user: "1000:1000"
+    build:
+      context: .docker/build/fpm
+      args:
+        LOCAL_USER_ID: $LOCAL_USER_ID
+        LOCAL_GROUP_ID: $LOCAL_GROUP_ID
+    user: "$LOCAL_USER_ID:$LOCAL_GROUP_ID"
     links:
       - mariadb
-      - elasticsearch
     volumes:
-      # Uncomment if you want cache composer stuff
-      #- ".docker/.composer:/.composer"
-      - ".docker:/home"
-      - "./:/var/www"
+      - .docker/.composer:/.composer
+      - app-sync:/var/www:nocopy
+      - "$LOCAL_SSH_PRIVATE_KEY:/home/user/.ssh/id_rsa:ro"
+    networks:
+      - frontend
+      - backend
+    environment:
+      XDEBUG_CONFIG: remote_host=172.27.0.1
   npm:
     image: ongr/nodejs:6.4.0
-    user: "1000:1000"
+    user: "$LOCAL_USER_ID:$LOCAL_GROUP_ID"
     volumes:
-      - ".docker/.npm:/home/.npm"
-      - "./:/home/app"
-      - "/usr/local/lib/node_modules"
+      - .docker/.npm:/home/.npm
+      - app-sync:/home/app:nocopy
+      - /usr/local/lib/node_modules
+    networks:
+      - frontend
   mariadb-data:
     image: tianon/true
     volumes:
       - /var/lib/mysql
+    networks:
+      - backend
   mariadb:
-    image: mariadb:10.1.10
+    image: mariadb:10.2.6
     ports:
-      - "3300:3306"
+      - "$LOCAL_MYSQL_PORT:3306"
     volumes_from:
       - "mariadb-data"
     environment:
-        MYSQL_ROOT_PASSWORD: root
+#      MYSQL_DATABASE: "$MYSQL_DATABASE"
+      MYSQL_ROOT_PASSWORD: root
+    networks:
+      - backend
+volumes:
+  app-sync:
+    external: true
+networks:
+  frontend:
+    driver: bridge
+    ipam:
+      config:
+      - subnet: 172.27.0.0/24
+  backend:
+    driver: bridge
+    ipam:
+      config:
+      - subnet: 172.27.1.0/24
