@@ -47,7 +47,7 @@ services:
   mariadb:
     image: mariadb:10.2.6
     ports:
-      - "$LOCAL_MYSQL_PORT:3306"
+      - "$LOCAL_MYSQL_PORT:13306"
     volumes_from:
       - "mariadb-data"
     environment:
