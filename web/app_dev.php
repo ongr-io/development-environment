@@ -1,3 +1,3 @@
 <?php
 
-echo "Everything work's as expected, world is safe!";
+echo "Everything work's as expected, world is safe!!!";

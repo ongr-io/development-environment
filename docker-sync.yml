@@ -5,7 +5,7 @@ options:
   max-attempt: 30
 syncs:
   #IMPORTANT: ensure this name is unique and does not match your other application container name
-  app-sync: # tip: add -sync and you keep consistent names as a convention
+  $SYNC_CONTAINER: # tip: add -sync and you keep consistent names as a convention
     src: './'
     # sync_strategy: 'native_osx' # not needed, this is the default now
     sync_userid: $LOCAL_USER_ID
